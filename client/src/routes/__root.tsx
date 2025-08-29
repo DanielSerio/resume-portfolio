@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import { supabase } from "@/lib/supabase";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
@@ -16,9 +17,9 @@ export const Route = createRootRoute({
     return await fetchSession();
   },
   component: () => (
-    <>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Outlet />
       <TanStackRouterDevtools />
-    </>
+    </ThemeProvider>
   ),
 });
