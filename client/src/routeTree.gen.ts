@@ -9,6 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShowcaseRouteRouteImport } from './routes/showcase/route'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as resumeRouteRouteImport } from './routes/(resume)/route'
 import { Route as ShowcaseIndexRouteImport } from './routes/showcase/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as resumeIndexRouteImport } from './routes/(resume)/index'
@@ -17,50 +20,66 @@ import { Route as AdminSubcategoriesRouteImport } from './routes/admin/subcatego
 import { Route as AdminSkillsRouteImport } from './routes/admin/skills'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 
-const ShowcaseIndexRoute = ShowcaseIndexRouteImport.update({
-  id: '/showcase/',
-  path: '/showcase/',
+const ShowcaseRouteRoute = ShowcaseRouteRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const resumeRouteRoute = resumeRouteRouteImport.update({
+  id: '/(resume)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShowcaseIndexRoute = ShowcaseIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShowcaseRouteRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const resumeIndexRoute = resumeIndexRouteImport.update({
-  id: '/(resume)/',
+  id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => resumeRouteRoute,
 } as any)
 const ShowcaseIdRoute = ShowcaseIdRouteImport.update({
-  id: '/showcase/$id',
-  path: '/showcase/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ShowcaseRouteRoute,
 } as any)
 const AdminSubcategoriesRoute = AdminSubcategoriesRouteImport.update({
-  id: '/admin/subcategories',
-  path: '/admin/subcategories',
-  getParentRoute: () => rootRouteImport,
+  id: '/subcategories',
+  path: '/subcategories',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminSkillsRoute = AdminSkillsRouteImport.update({
-  id: '/admin/skills',
-  path: '/admin/skills',
-  getParentRoute: () => rootRouteImport,
+  id: '/skills',
+  path: '/skills',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
-  id: '/admin/categories',
-  path: '/admin/categories',
-  getParentRoute: () => rootRouteImport,
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof resumeIndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/showcase': typeof ShowcaseRouteRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/skills': typeof AdminSkillsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/showcase/$id': typeof ShowcaseIdRoute
-  '/': typeof resumeIndexRoute
-  '/admin': typeof AdminIndexRoute
-  '/showcase': typeof ShowcaseIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/showcase/': typeof ShowcaseIndexRoute
 }
 export interface FileRoutesByTo {
   '/admin/categories': typeof AdminCategoriesRoute
@@ -73,6 +92,9 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(resume)': typeof resumeRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/showcase': typeof ShowcaseRouteRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/skills': typeof AdminSkillsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
@@ -84,13 +106,15 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
+    | '/admin'
+    | '/showcase'
     | '/admin/categories'
     | '/admin/skills'
     | '/admin/subcategories'
     | '/showcase/$id'
-    | '/'
-    | '/admin'
-    | '/showcase'
+    | '/admin/'
+    | '/showcase/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin/categories'
@@ -102,6 +126,9 @@ export interface FileRouteTypes {
     | '/showcase'
   id:
     | '__root__'
+    | '/(resume)'
+    | '/admin'
+    | '/showcase'
     | '/admin/categories'
     | '/admin/skills'
     | '/admin/subcategories'
@@ -112,77 +139,134 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AdminCategoriesRoute: typeof AdminCategoriesRoute
-  AdminSkillsRoute: typeof AdminSkillsRoute
-  AdminSubcategoriesRoute: typeof AdminSubcategoriesRoute
-  ShowcaseIdRoute: typeof ShowcaseIdRoute
-  resumeIndexRoute: typeof resumeIndexRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-  ShowcaseIndexRoute: typeof ShowcaseIndexRoute
+  resumeRouteRoute: typeof resumeRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  ShowcaseRouteRoute: typeof ShowcaseRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/showcase/': {
-      id: '/showcase/'
+    '/showcase': {
+      id: '/showcase'
       path: '/showcase'
       fullPath: '/showcase'
-      preLoaderRoute: typeof ShowcaseIndexRouteImport
+      preLoaderRoute: typeof ShowcaseRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(resume)': {
+      id: '/(resume)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof resumeRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/showcase/': {
+      id: '/showcase/'
+      path: '/'
+      fullPath: '/showcase/'
+      preLoaderRoute: typeof ShowcaseIndexRouteImport
+      parentRoute: typeof ShowcaseRouteRoute
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin'
+      path: '/'
+      fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/(resume)/': {
       id: '/(resume)/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof resumeIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof resumeRouteRoute
     }
     '/showcase/$id': {
       id: '/showcase/$id'
-      path: '/showcase/$id'
+      path: '/$id'
       fullPath: '/showcase/$id'
       preLoaderRoute: typeof ShowcaseIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ShowcaseRouteRoute
     }
     '/admin/subcategories': {
       id: '/admin/subcategories'
-      path: '/admin/subcategories'
+      path: '/subcategories'
       fullPath: '/admin/subcategories'
       preLoaderRoute: typeof AdminSubcategoriesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/skills': {
       id: '/admin/skills'
-      path: '/admin/skills'
+      path: '/skills'
       fullPath: '/admin/skills'
       preLoaderRoute: typeof AdminSkillsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/categories': {
       id: '/admin/categories'
-      path: '/admin/categories'
+      path: '/categories'
       fullPath: '/admin/categories'
       preLoaderRoute: typeof AdminCategoriesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
+interface resumeRouteRouteChildren {
+  resumeIndexRoute: typeof resumeIndexRoute
+}
+
+const resumeRouteRouteChildren: resumeRouteRouteChildren = {
+  resumeIndexRoute: resumeIndexRoute,
+}
+
+const resumeRouteRouteWithChildren = resumeRouteRoute._addFileChildren(
+  resumeRouteRouteChildren,
+)
+
+interface AdminRouteRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminSkillsRoute: typeof AdminSkillsRoute
+  AdminSubcategoriesRoute: typeof AdminSubcategoriesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminSkillsRoute: AdminSkillsRoute,
   AdminSubcategoriesRoute: AdminSubcategoriesRoute,
-  ShowcaseIdRoute: ShowcaseIdRoute,
-  resumeIndexRoute: resumeIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
+interface ShowcaseRouteRouteChildren {
+  ShowcaseIdRoute: typeof ShowcaseIdRoute
+  ShowcaseIndexRoute: typeof ShowcaseIndexRoute
+}
+
+const ShowcaseRouteRouteChildren: ShowcaseRouteRouteChildren = {
+  ShowcaseIdRoute: ShowcaseIdRoute,
   ShowcaseIndexRoute: ShowcaseIndexRoute,
+}
+
+const ShowcaseRouteRouteWithChildren = ShowcaseRouteRoute._addFileChildren(
+  ShowcaseRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  resumeRouteRoute: resumeRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  ShowcaseRouteRoute: ShowcaseRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

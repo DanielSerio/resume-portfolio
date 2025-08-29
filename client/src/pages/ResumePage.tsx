@@ -1,3 +1,9 @@
+import { Page } from "@/components/layout/Page";
+
 export function ResumePage() {
-  return <div>ResumePage</div>;
+  return (
+    <Page>
+      <div>ResumePage</div>
+    </Page>
+  );
 }
