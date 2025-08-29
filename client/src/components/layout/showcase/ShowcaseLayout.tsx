@@ -11,9 +11,8 @@ export default function ShowcaseLayout({
 }) {
   return (
     <SidebarProvider>
+      <ShowcaseSidebar />
       <Layout name="showcase">
-        <ShowcaseSidebar />
-
         <ShowcaseHeader>
           <SidebarTrigger />
         </ShowcaseHeader>

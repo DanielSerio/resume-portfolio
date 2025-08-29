@@ -10,9 +10,8 @@ export default function AdminLayout({
 }) {
   return (
     <SidebarProvider>
+      <AdminSidebar />
       <Layout name="admin">
-        <AdminSidebar />
-
         <AdminHeader>
           <SidebarTrigger />
         </AdminHeader>
