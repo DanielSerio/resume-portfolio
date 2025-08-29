@@ -1,0 +1,32 @@
+import { z } from "zod";
+
+export const SkillSchema = z.object({
+  id: z.string(),
+  name: z.string().nullable(),
+  category_id: z.string(),
+  subcategory_id: z.string().nullable(),
+  comfort_level: z.number(),
+  last_updated_at: z.string(),
+});
+
+export const SkillInsertSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().nullable().optional(),
+  category_id: z.string().optional(),
+  subcategory_id: z.string().nullable().optional(),
+  comfort_level: z.number().optional(),
+  last_updated_at: z.string().optional(),
+});
+
+export const SkillUpdateSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().nullable().optional(),
+  category_id: z.string().optional(),
+  subcategory_id: z.string().nullable().optional(),
+  comfort_level: z.number().optional(),
+  last_updated_at: z.string().optional(),
+});
+
+export type Skill = z.infer<typeof SkillSchema>;
+export type SkillInsert = z.infer<typeof SkillInsertSchema>;
+export type SkillUpdate = z.infer<typeof SkillUpdateSchema>;

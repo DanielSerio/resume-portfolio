@@ -1,0 +1,17 @@
+#root {
+  display: contents;
+}
+
+.layout,
+.layout > #page {
+  display: flex;
+  flex-direction: column
+}
+
+.layout {
+  @apply relative min-h-screen;
+}
+
+.layout > #page {
+  @apply flex-1;
+}

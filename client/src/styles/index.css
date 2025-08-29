@@ -119,6 +119,4 @@
   }
 }
 
-#root {
-  display: contents;
-}
+@import './layout.css';

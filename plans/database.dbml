@@ -1,0 +1,35 @@
+// Database schema for resume-portfolio application
+// Generated from Supabase database.types.ts
+
+Table employer_experience {
+  id varchar [pk]
+  name varchar [not null]
+}
+
+Table skill_category {
+  id varchar [pk]
+  name varchar [not null]
+}
+
+Table skill_subcategory {
+  id varchar [pk]
+  name varchar [not null]
+}
+
+Table skill {
+  id varchar [pk]
+  name varchar
+  category_id varchar [ref: > skill_category.id]
+  subcategory_id varchar [ref: > skill_subcategory.id]
+  comfort_level integer [default: 0]
+  last_updated_at varchar [not null]
+}
+
+Table skill_employer_experience {
+  skill_id varchar [ref: > skill.id]
+  employer_experience_id varchar [ref: > employer_experience.id]
+  
+  indexes {
+    (skill_id, employer_experience_id) [pk]
+  }
+}
