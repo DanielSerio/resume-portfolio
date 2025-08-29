@@ -25,7 +25,7 @@ below is the URL structure we will use:
 |__/                       # Resume Page
 |
 |__/showcase               # Showcase Directory
-|  |__/                    # Showcase List Page - Lists a series of "advanced frontend problems"
+|  |__/                    # Showcase About Page - About the Showcase module (list of mini internal applications that demonstrate solutions to UX/UI problems solution)
 |  |__/[id]                # Showcase Entity Page - A mini internal application that demonstrates the UX/UI problems solution
 |
 |__/admin                  # Admin Directory

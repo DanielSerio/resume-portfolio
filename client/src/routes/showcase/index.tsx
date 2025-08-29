@@ -1,4 +1,4 @@
-import { ShowcaseListPage } from "@/pages/ShowcaseListPage";
+import { ShowcaseAboutPage } from "@/pages/ShowcaseAboutPage";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/showcase/")({
@@ -6,5 +6,5 @@ export const Route = createFileRoute("/showcase/")({
 });
 
 function RouteComponent() {
-  return <ShowcaseListPage />;
+  return <ShowcaseAboutPage />;
 }
