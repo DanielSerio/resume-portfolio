@@ -1,7 +1,10 @@
 import { useRouterState } from "@tanstack/react-router";
 import type { PropsWithChildren } from "react";
 
-export function Layout({ children }: PropsWithChildren<{ name: string }>) {
+export function Layout({
+  children,
+  name,
+}: PropsWithChildren<{ name: string }>) {
   const state = useRouterState();
 
   return (
