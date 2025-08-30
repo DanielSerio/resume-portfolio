@@ -6,7 +6,7 @@ export const Route = createFileRoute("/(resume)/")({
 });
 
 function RouteComponent() {
-  //const ctx = Route.useRouteContext();
+  const ctx = Route.useRouteContext();
 
-  return <ResumePage />;
+  return <ResumePage supabase={ctx.supabase} />;
 }

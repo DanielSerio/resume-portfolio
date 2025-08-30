@@ -13,9 +13,11 @@ import "./styles/index.css";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
+export type Client = typeof supabase;
+
 // Create router context type
 export interface RouterContext {
-  supabase: typeof supabase;
+  supabase: Client;
   user: User | null;
 }
 

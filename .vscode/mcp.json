@@ -1,0 +1,10 @@
+{
+  "servers": [
+    {
+      "id": "context7-mcp",
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "name": "Context7 MCP Server"
+    }
+  ]
+}
