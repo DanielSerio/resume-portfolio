@@ -25,12 +25,7 @@ dist-ssr
 *.sw?
 
 # Supabase
-supabase/.branches
-supabase/.branches/*
-supabase/.temp
-supabase/.temp/*
-supabase/migrations
-supabase/migrations/*
+supabase/*
 
 # dotenvx
 .env.keys
