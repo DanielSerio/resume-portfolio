@@ -48,9 +48,9 @@ function ImageLabeledLink({
 
 export function ResumeHeader() {
   const email = "dserio.d@gmail.com";
-  const linkedin = "LINKEDIN_URL";
-  const github = "GITHUB_URL";
-  const site = "SITE_URL";
+  const linkedin = "https://www.linkedin.com/in/dan-serio-22a99644/";
+  const github = "https://github.com/DanielSerio";
+  const site = "https://danielserio.github.io/danserio/";
 
   return (
     <Header>
@@ -66,25 +66,17 @@ export function ResumeHeader() {
 
         <LabeledLinks>
           <TextLabeledLink
-            label="Email"
-            link={{
-              text: email,
-              href: `mailto:${email}`,
-            }}
-          />
-          <TextLabeledLink
             label="Phone"
             link={{
               text: "(847)370.5271",
               href: "tel:+18473705271",
             }}
           />
-          <ImageLabeledLink
-            title="Linkedin"
-            imgSrc="linkedin.png"
+          <TextLabeledLink
+            label="Email"
             link={{
-              text: linkedin,
-              href: linkedin,
+              text: email,
+              href: `mailto:${email}`,
             }}
           />
           <ImageLabeledLink
@@ -100,6 +92,14 @@ export function ResumeHeader() {
             link={{
               text: site,
               href: site,
+            }}
+          />
+          <ImageLabeledLink
+            title="Linkedin"
+            imgSrc="linkedin.png"
+            link={{
+              text: linkedin,
+              href: linkedin,
             }}
           />
         </LabeledLinks>

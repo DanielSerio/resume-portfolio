@@ -23,7 +23,7 @@ export function Header({ children, className, ...props }: HeaderProps) {
           className="ml-3"
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         >
-          <Contrast />
+          <Contrast opacity={0.5} />
         </Button>
       </section>
     </header>
