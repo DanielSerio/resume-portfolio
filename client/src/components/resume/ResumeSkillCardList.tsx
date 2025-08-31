@@ -1,6 +1,5 @@
-import type { SkillObject, useSkillsList } from "@/hooks/resume";
+import type { SkillObject, useGroupedSkillsList } from "@/hooks/resume";
 import { ResumeSkillCard } from "./ResumeSkillCard";
-import { Separator } from "@radix-ui/react-separator";
 
 function getCategory(subcategoryGroup: Record<string, SkillObject[]>) {
   return Object.values(subcategoryGroup).flat()[0].category;
@@ -13,7 +12,7 @@ function getSubcategory(skills: SkillObject[]) {
 export function ResumeSkillCardList({
   skillsListQuery,
 }: {
-  skillsListQuery: ReturnType<typeof useSkillsList>;
+  skillsListQuery: ReturnType<typeof useGroupedSkillsList>;
 }) {
   return (
     <div className="flex flex-col gap-4">

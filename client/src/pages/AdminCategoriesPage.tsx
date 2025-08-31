@@ -1,3 +1,4 @@
+import { Table } from "@/components/core";
 import { Page } from "@/components/layout/Page";
 import { useCategoryTable } from "@/hooks/admin/useCategoryTable";
 import { useCategoriesList } from "@/hooks/resume";
@@ -7,11 +8,15 @@ export function AdminCategoriesPage() {
   const { supabase } = useRouteContext({ from: "/admin/categories" });
 
   const query = useCategoriesList(supabase);
-  const table = useCategoryTable({ query });
+  const { table, gridTemplateColumns } = useCategoryTable({ query });
 
   return (
     <Page>
-      <div>AdminCategoriesPage</div>
+      <Table
+        isLoading={query.isLoading}
+        table={table}
+        gridTemplateColumns={gridTemplateColumns}
+      />
     </Page>
   );
 }

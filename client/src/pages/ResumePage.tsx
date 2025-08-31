@@ -1,12 +1,12 @@
 import { Page } from "@/components/layout/Page";
 import { ResumeSection } from "@/components/layout/resume/ResumeSection";
 import { ResumeSkillCardList } from "@/components/resume";
-import { useSkillsList } from "@/hooks/resume";
+import { useGroupedSkillsList } from "@/hooks/resume";
 import type { Client } from "@/main";
 import { Brain, SquareStar } from "lucide-react";
 
 export function ResumePage({ supabase }: { supabase: Client }) {
-  const skillsListQuery = useSkillsList(supabase);
+  const skillsListQuery = useGroupedSkillsList(supabase);
 
   return (
     <Page>
