@@ -9,45 +9,36 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  useCreateSkillSubcategoryForm,
-  useUpdateSkillSubcategoryForm,
-  useDeleteSkillSubcategoryForm,
+  useCreateEmployerExperienceForm,
+  useUpdateEmployerExperienceForm,
+  useDeleteEmployerExperienceForm,
 } from "@/hooks/admin";
-import type { SkillSubcategory } from "@/lib/schemas";
+import type { EmployerExperience } from "@/lib/schemas";
 
-export interface SubcategoryFormProps {
+export interface EmployerExperienceFormProps {
   mode: "create" | "update" | "delete";
-  subcategory?: SkillSubcategory;
+  employerExperience?: EmployerExperience;
   onCancel?: () => void;
 }
 
-export function SubcategoryForm({
-  mode,
-  subcategory,
-  onCancel,
-}: SubcategoryFormProps) {
+export function EmployerExperienceForm({ mode, employerExperience, onCancel }: EmployerExperienceFormProps) {
   if (mode === "create") {
-    return <CreateSubcategoryForm onCancel={onCancel} />;
+    return <CreateEmployerExperienceForm onCancel={onCancel} />;
   }
 
-  if (mode === "update" && subcategory) {
-    return (
-      <UpdateSubcategoryForm subcategory={subcategory} onCancel={onCancel} />
-    );
+  if (mode === "update" && employerExperience) {
+    return <UpdateEmployerExperienceForm employerExperience={employerExperience} onCancel={onCancel} />;
   }
 
-  if (mode === "delete" && subcategory) {
-    return (
-      <DeleteSubcategoryForm subcategory={subcategory} onCancel={onCancel} />
-    );
+  if (mode === "delete" && employerExperience) {
+    return <DeleteEmployerExperienceForm employerExperience={employerExperience} onCancel={onCancel} />;
   }
 
   return null;
 }
 
-function CreateSubcategoryForm({ onCancel }: { onCancel?: () => void }) {
-  const { form, handleSubmit, isLoading, error } =
-    useCreateSkillSubcategoryForm();
+function CreateEmployerExperienceForm({ onCancel }: { onCancel?: () => void }) {
+  const { form, handleSubmit, isLoading, error } = useCreateEmployerExperienceForm();
 
   return (
     <Form {...form}>
@@ -57,10 +48,10 @@ function CreateSubcategoryForm({ onCancel }: { onCancel?: () => void }) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subcategory Name</FormLabel>
+              <FormLabel>Employer Experience Name</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter subcategory name"
+                  placeholder="Enter employer experience name"
                   {...field}
                   disabled={isLoading}
                 />
@@ -78,7 +69,7 @@ function CreateSubcategoryForm({ onCancel }: { onCancel?: () => void }) {
 
         <div className="flex gap-3">
           <Button type="submit" className="flex-1" disabled={isLoading}>
-            {isLoading ? "Creating..." : "Create Subcategory"}
+            {isLoading ? "Creating..." : "Create Employer Experience"}
           </Button>
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
@@ -91,15 +82,15 @@ function CreateSubcategoryForm({ onCancel }: { onCancel?: () => void }) {
   );
 }
 
-function UpdateSubcategoryForm({
-  subcategory,
+function UpdateEmployerExperienceForm({
+  employerExperience,
   onCancel,
 }: {
-  subcategory: SkillSubcategory;
+  employerExperience: EmployerExperience;
   onCancel?: () => void;
 }) {
   const { form, handleSubmit, isLoading, error } =
-    useUpdateSkillSubcategoryForm(subcategory);
+    useUpdateEmployerExperienceForm(employerExperience);
 
   return (
     <Form {...form}>
@@ -109,10 +100,10 @@ function UpdateSubcategoryForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subcategory Name</FormLabel>
+              <FormLabel>Employer Experience Name</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter subcategory name"
+                  placeholder="Enter employer experience name"
                   {...field}
                   disabled={isLoading}
                 />
@@ -130,7 +121,7 @@ function UpdateSubcategoryForm({
 
         <div className="flex gap-3">
           <Button type="submit" className="flex-1" disabled={isLoading}>
-            {isLoading ? "Updating..." : "Update Subcategory"}
+            {isLoading ? "Updating..." : "Update Employer Experience"}
           </Button>
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
@@ -143,26 +134,26 @@ function UpdateSubcategoryForm({
   );
 }
 
-function DeleteSubcategoryForm({
-  subcategory,
+function DeleteEmployerExperienceForm({
+  employerExperience,
   onCancel,
 }: {
-  subcategory: SkillSubcategory;
+  employerExperience: EmployerExperience;
   onCancel?: () => void;
 }) {
   const { form, handleSubmit, isLoading, error } =
-    useDeleteSkillSubcategoryForm(subcategory);
+    useDeleteEmployerExperienceForm(employerExperience);
 
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="p-4 bg-red-50 rounded-md">
           <div className="text-red-800 font-medium mb-2">
-            Delete Subcategory: {subcategory.name}
+            Delete Employer Experience: {employerExperience.name}
           </div>
           <div className="text-red-700 text-sm">
             This action cannot be undone. This will permanently delete the
-            subcategory and may affect related skills.
+            employer experience and may affect related skills.
           </div>
         </div>
 
@@ -172,11 +163,11 @@ function DeleteSubcategoryForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Type "{subcategory.name}" to confirm deletion
+                Type "{employerExperience.name}" to confirm deletion
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder={`Type "${subcategory.name}" here`}
+                  placeholder={`Type "${employerExperience.name}" here`}
                   {...field}
                   disabled={isLoading}
                 />
@@ -199,7 +190,7 @@ function DeleteSubcategoryForm({
             disabled={isLoading}
             variant="destructive"
           >
-            {isLoading ? "Deleting..." : "Delete Subcategory"}
+            {isLoading ? "Deleting..." : "Delete Employer Experience"}
           </Button>
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>

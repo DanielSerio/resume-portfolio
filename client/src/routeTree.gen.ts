@@ -18,6 +18,7 @@ import { Route as resumeIndexRouteImport } from './routes/(resume)/index'
 import { Route as ShowcaseIdRouteImport } from './routes/showcase/$id'
 import { Route as AdminSubcategoriesRouteImport } from './routes/admin/subcategories'
 import { Route as AdminSkillsRouteImport } from './routes/admin/skills'
+import { Route as AdminEmployerExperiencesRouteImport } from './routes/admin/employer-experiences'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 
 const ShowcaseRouteRoute = ShowcaseRouteRouteImport.update({
@@ -64,6 +65,12 @@ const AdminSkillsRoute = AdminSkillsRouteImport.update({
   path: '/skills',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminEmployerExperiencesRoute =
+  AdminEmployerExperiencesRouteImport.update({
+    id: '/employer-experiences',
+    path: '/employer-experiences',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
@@ -75,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
   '/showcase': typeof ShowcaseRouteRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/employer-experiences': typeof AdminEmployerExperiencesRoute
   '/admin/skills': typeof AdminSkillsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/showcase/$id': typeof ShowcaseIdRoute
@@ -83,6 +91,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/employer-experiences': typeof AdminEmployerExperiencesRoute
   '/admin/skills': typeof AdminSkillsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/showcase/$id': typeof ShowcaseIdRoute
@@ -96,6 +105,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteRouteWithChildren
   '/showcase': typeof ShowcaseRouteRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/employer-experiences': typeof AdminEmployerExperiencesRoute
   '/admin/skills': typeof AdminSkillsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/showcase/$id': typeof ShowcaseIdRoute
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/showcase'
     | '/admin/categories'
+    | '/admin/employer-experiences'
     | '/admin/skills'
     | '/admin/subcategories'
     | '/showcase/$id'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin/categories'
+    | '/admin/employer-experiences'
     | '/admin/skills'
     | '/admin/subcategories'
     | '/showcase/$id'
@@ -130,6 +142,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/showcase'
     | '/admin/categories'
+    | '/admin/employer-experiences'
     | '/admin/skills'
     | '/admin/subcategories'
     | '/showcase/$id'
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSkillsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/employer-experiences': {
+      id: '/admin/employer-experiences'
+      path: '/employer-experiences'
+      fullPath: '/admin/employer-experiences'
+      preLoaderRoute: typeof AdminEmployerExperiencesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/categories': {
       id: '/admin/categories'
       path: '/categories'
@@ -233,6 +253,7 @@ const resumeRouteRouteWithChildren = resumeRouteRoute._addFileChildren(
 
 interface AdminRouteRouteChildren {
   AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminEmployerExperiencesRoute: typeof AdminEmployerExperiencesRoute
   AdminSkillsRoute: typeof AdminSkillsRoute
   AdminSubcategoriesRoute: typeof AdminSubcategoriesRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -240,6 +261,7 @@ interface AdminRouteRouteChildren {
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminEmployerExperiencesRoute: AdminEmployerExperiencesRoute,
   AdminSkillsRoute: AdminSkillsRoute,
   AdminSubcategoriesRoute: AdminSubcategoriesRoute,
   AdminIndexRoute: AdminIndexRoute,

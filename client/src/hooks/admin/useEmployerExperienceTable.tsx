@@ -4,26 +4,26 @@ import {
   type Row,
 } from "@tanstack/react-table";
 import { useMemo } from "react";
-import type { useSkillsList } from "../resume";
-import { useSkillTableColumns } from "./useSkillTableColumns";
+import type { useEmployerExperiencesList } from "../resume";
+import { useEmployerExperienceTableColumns } from "./useEmployerExperienceTableColumns";
 import { getTableRowSizeProps } from "@/lib/utils";
 
-type Data = NonNullable<ReturnType<typeof useSkillsList>["data"]>[number];
+type Data = NonNullable<ReturnType<typeof useEmployerExperiencesList>["data"]>[number];
 
-export interface UseSkillTableParams {
-  query: ReturnType<typeof useSkillsList>;
+export interface UseEmployerExperienceTableParams {
+  query: ReturnType<typeof useEmployerExperiencesList>;
   onDeleteClick: (row: Row<Data>) => void;
   onUpdateClick: (row: Row<Data>) => void;
 }
 
 const BLANK_DATA = [] as Data[];
 
-export function useSkillTable({
+export function useEmployerExperienceTable({
   query,
   onUpdateClick,
   onDeleteClick,
-}: UseSkillTableParams) {
-  const columns = useSkillTableColumns({
+}: UseEmployerExperienceTableParams) {
+  const columns = useEmployerExperienceTableColumns({
     onUpdateClick,
     onDeleteClick,
   });

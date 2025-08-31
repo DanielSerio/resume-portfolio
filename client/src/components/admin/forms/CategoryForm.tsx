@@ -120,7 +120,7 @@ function UpdateCategoryForm({
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" className="flex-1" disabled={isLoading}>
             {isLoading ? "Updating..." : "Update Category"}
           </Button>
           {onCancel && (
@@ -182,7 +182,12 @@ function DeleteCategoryForm({
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" disabled={isLoading} variant="destructive">
+          <Button
+            type="submit"
+            className="flex-1"
+            disabled={isLoading}
+            variant="destructive"
+          >
             {isLoading ? "Deleting..." : "Delete Category"}
           </Button>
           {onCancel && (

@@ -1,4 +1,4 @@
-import { Blocks, Brain, Grid2X2 } from "lucide-react";
+import { Blocks, Brain, Grid2X2, Briefcase } from "lucide-react";
 import type { ReactNode } from "react";
 
 interface NavItem {
@@ -22,5 +22,10 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     title: "Subcategories",
     url: "/admin/subcategories",
     icon: () => <Blocks />,
+  },
+  {
+    title: "Employer Experiences",
+    url: "/admin/employer-experiences",
+    icon: () => <Briefcase />,
   },
 ];

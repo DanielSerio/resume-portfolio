@@ -6,4 +6,5 @@ export * from "./useSkillEmployerExperienceForm";
 export * from './useCategoryTable';
 export * from './useSubcategoryTable';
 export * from './useSkillTable';
+export * from './useEmployerExperienceTable';
 export * from './useSelectedEntity';
