@@ -10,7 +10,7 @@ export function Layout({
   return (
     <div
       id="layout"
-      className={`layout bg-background dark:bg-gray-900 ${name}`}
+      className={`layout bg-background ${name}`}
       data-href={state.resolvedLocation?.href}
     >
       {children}

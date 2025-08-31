@@ -17,7 +17,7 @@ export function AdminSidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent className="dark:bg-slate-800">
+      <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Entity</SidebarGroupLabel>
           <SidebarGroupContent>

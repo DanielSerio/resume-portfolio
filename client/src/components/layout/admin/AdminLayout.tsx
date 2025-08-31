@@ -13,7 +13,6 @@ export default function AdminLayout({
   const isLoginPage = location.pathname === "/admin";
 
   if (isLoginPage) {
-    console.info("Is login");
     return <Layout name="admin">{children}</Layout>;
   }
 

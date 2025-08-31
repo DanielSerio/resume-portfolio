@@ -8,14 +8,12 @@
   flex-direction: column
 }
 
+.layout > #page,
+.layout.admin,
+.layout.showcase {
+  flex: 1;
+}
+
 .layout {
   @apply relative min-h-screen;
-}
-
-.layout > #page {
-  @apply flex-1;
-}
-
-.layout.admin {
-  flex: 1;
 }

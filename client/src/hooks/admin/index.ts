@@ -3,3 +3,4 @@ export * from "./useSkillCategoryForm";
 export * from "./useSkillSubcategoryForm";
 export * from "./useSkillForm";
 export * from "./useSkillEmployerExperienceForm";
+export * from './useCategoryTable';
