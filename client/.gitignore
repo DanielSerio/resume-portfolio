@@ -32,3 +32,6 @@ supabase/*
 .env.keys
 .env.local
 .env.*.local
+
+*storybook.log
+storybook-static
