@@ -83,7 +83,11 @@ export function AdminCategoriesPage() {
         table={table}
         gridTemplateColumns={gridTemplateColumns}
       />
-      <Button onClick={() => setCreateLaunchedAt()}>Create</Button>
+      <div className="p-4">
+        <Button onClick={() => setCreateLaunchedAt()}>
+          Create a New Category
+        </Button>
+      </div>
       <Sheet
         open={selectedCategory !== null || createLaunchedAt !== null}
         onOpenChange={dismissSheet}

@@ -18,8 +18,15 @@ export interface UseCategoryTableParams {
 
 const BLANK_DATA = [] as Data[];
 
-export function useCategoryTable({ query }: UseCategoryTableParams) {
-  const columns = useCategoryTableColumns();
+export function useCategoryTable({
+  query,
+  onUpdateClick,
+  onDeleteClick,
+}: UseCategoryTableParams) {
+  const columns = useCategoryTableColumns({
+    onUpdateClick,
+    onDeleteClick,
+  });
   const data = useMemo(() => {
     if (!query.data) {
       return BLANK_DATA;

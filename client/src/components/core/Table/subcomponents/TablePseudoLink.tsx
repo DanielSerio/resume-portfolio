@@ -1,0 +1,16 @@
+import { Button } from "@/components/ui/button";
+import type { PropsWithChildren } from "react";
+
+interface TablePseudoLinkProps
+  extends PropsWithChildren<{ onClick: () => void }> {}
+
+export const TablePseudoLink = ({
+  children,
+  onClick,
+}: TablePseudoLinkProps) => {
+  return (
+    <Button variant="link" size="sm" onClick={onClick}>
+      {children}
+    </Button>
+  );
+};

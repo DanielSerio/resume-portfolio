@@ -1,20 +1,20 @@
 import { TablePseudoLink } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import type { SkillCategory } from "@/lib/schemas";
+import type { SkillSubcategory } from "@/lib/schemas";
 import type { TableColumnDef } from "@/lib/types/table.types";
 import type { CellContext, Row } from "@tanstack/react-table";
 import { Trash } from "lucide-react";
-import { useMemo, type JSX, type PropsWithChildren } from "react";
+import { useMemo, type JSX } from "react";
 
-export interface UseCategoryTableColumnsParams {
-  onUpdateClick: (row: Row<SkillCategory>) => void;
-  onDeleteClick: (row: Row<SkillCategory>) => void;
+export interface UseSubcategoryTableColumnsParams {
+  onUpdateClick: (row: Row<SkillSubcategory>) => void;
+  onDeleteClick: (row: Row<SkillSubcategory>) => void;
 }
 
-export function useCategoryTableColumns({
+export function useSubcategoryTableColumns({
   onUpdateClick,
   onDeleteClick,
-}: UseCategoryTableColumnsParams) {
+}: UseSubcategoryTableColumnsParams) {
   function UpdateCell({
     cell,
     row,
@@ -68,6 +68,6 @@ export function useCategoryTableColumns({
           );
         },
       },
-    ] satisfies TableColumnDef<SkillCategory>[];
+    ] satisfies TableColumnDef<SkillSubcategory>[];
   }, [onUpdateClick, onDeleteClick]);
 }
