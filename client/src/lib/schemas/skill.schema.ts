@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { EmployerExperienceSchema } from "./employer-experience.schema";
 
 export const SkillSchema = z.object({
   id: z.string(),
@@ -16,6 +17,7 @@ export const SkillInsertSchema = z.object({
   subcategory_id: z.string().nullable().optional(),
   comfort_level: z.number().optional(),
   last_updated_at: z.string().optional(),
+  employer_experience: z.array(EmployerExperienceSchema)
 });
 
 export const SkillUpdateSchema = z.object({
@@ -25,6 +27,7 @@ export const SkillUpdateSchema = z.object({
   subcategory_id: z.string().nullable().optional(),
   comfort_level: z.number().optional(),
   last_updated_at: z.string().optional(),
+  employer_experience: z.array(EmployerExperienceSchema)
 });
 
 export type Skill = z.infer<typeof SkillSchema>;

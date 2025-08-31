@@ -9,11 +9,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   useCreateEmployerExperienceForm,
   useUpdateEmployerExperienceForm,
   useDeleteEmployerExperienceForm,
 } from "@/hooks/admin";
+import { useSkillsList } from "@/hooks/resume";
 import type { EmployerExperience } from "@/lib/schemas";
+import type { Client } from "@/main";
+import { useRouteContext } from "@tanstack/react-router";
+import { useFieldArray } from "react-hook-form";
+import { Trash2, Plus } from "lucide-react";
 
 export interface EmployerExperienceFormProps {
   mode: "create" | "update" | "delete";
@@ -22,12 +34,14 @@ export interface EmployerExperienceFormProps {
 }
 
 export function EmployerExperienceForm({ mode, employerExperience, onCancel }: EmployerExperienceFormProps) {
+  const { supabase } = useRouteContext({ from: "/admin/employer-experiences" });
+
   if (mode === "create") {
-    return <CreateEmployerExperienceForm onCancel={onCancel} />;
+    return <CreateEmployerExperienceForm supabase={supabase} onCancel={onCancel} />;
   }
 
   if (mode === "update" && employerExperience) {
-    return <UpdateEmployerExperienceForm employerExperience={employerExperience} onCancel={onCancel} />;
+    return <UpdateEmployerExperienceForm supabase={supabase} employerExperience={employerExperience} onCancel={onCancel} />;
   }
 
   if (mode === "delete" && employerExperience) {
@@ -37,8 +51,14 @@ export function EmployerExperienceForm({ mode, employerExperience, onCancel }: E
   return null;
 }
 
-function CreateEmployerExperienceForm({ onCancel }: { onCancel?: () => void }) {
+function CreateEmployerExperienceForm({ supabase, onCancel }: { supabase: Client; onCancel?: () => void }) {
   const { form, handleSubmit, isLoading, error } = useCreateEmployerExperienceForm();
+  const skillsQuery = useSkillsList(supabase);
+  
+  const { fields: skillFields, append: appendSkill, remove: removeSkill } = useFieldArray({
+    control: form.control,
+    name: "skills"
+  });
 
   return (
     <Form {...form}>
@@ -60,6 +80,63 @@ function CreateEmployerExperienceForm({ onCancel }: { onCancel?: () => void }) {
             </FormItem>
           )}
         />
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <FormLabel>Skills</FormLabel>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendSkill({ id: "" })}
+              disabled={isLoading}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Skill
+            </Button>
+          </div>
+          
+          {skillFields.map((field, index) => (
+            <div key={field.id} className="flex items-center gap-3 p-3 border rounded">
+              <FormField
+                control={form.control}
+                name={`skills.${index}.id`}
+                render={({ field: selectField }) => (
+                  <FormItem className="flex-1">
+                    <Select
+                      onValueChange={selectField.onChange}
+                      value={selectField.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a skill" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {(skillsQuery.data ?? []).map((skill) => (
+                          <SelectItem key={skill.id} value={skill.id}>
+                            {skill.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeSkill(index)}
+                disabled={isLoading}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
 
         {error && (
           <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
@@ -83,14 +160,22 @@ function CreateEmployerExperienceForm({ onCancel }: { onCancel?: () => void }) {
 }
 
 function UpdateEmployerExperienceForm({
+  supabase,
   employerExperience,
   onCancel,
 }: {
+  supabase: Client;
   employerExperience: EmployerExperience;
   onCancel?: () => void;
 }) {
   const { form, handleSubmit, isLoading, error } =
     useUpdateEmployerExperienceForm(employerExperience);
+  const skillsQuery = useSkillsList(supabase);
+  
+  const { fields: skillFields, append: appendSkill, remove: removeSkill } = useFieldArray({
+    control: form.control,
+    name: "skills"
+  });
 
   return (
     <Form {...form}>
@@ -112,6 +197,63 @@ function UpdateEmployerExperienceForm({
             </FormItem>
           )}
         />
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <FormLabel>Skills</FormLabel>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendSkill({ id: "" })}
+              disabled={isLoading}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Skill
+            </Button>
+          </div>
+          
+          {skillFields.map((field, index) => (
+            <div key={field.id} className="flex items-center gap-3 p-3 border rounded">
+              <FormField
+                control={form.control}
+                name={`skills.${index}.id`}
+                render={({ field: selectField }) => (
+                  <FormItem className="flex-1">
+                    <Select
+                      onValueChange={selectField.onChange}
+                      value={selectField.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a skill" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {(skillsQuery.data ?? []).map((skill) => (
+                          <SelectItem key={skill.id} value={skill.id}>
+                            {skill.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeSkill(index)}
+                disabled={isLoading}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
 
         {error && (
           <div className="text-sm text-red-600 bg-red-50 p-3 rounded">

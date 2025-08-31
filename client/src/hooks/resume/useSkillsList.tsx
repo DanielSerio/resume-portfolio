@@ -17,7 +17,9 @@ export function useSkillsList(supabase: Client) {
       subcategory_id,
       last_updated_at,
       category:category_id(id, name),
-      subcategory:subcategory_id(id, name)
+      subcategory:subcategory_id(id, name),
+      skill_employer_experience(id:skill_id,employer_experience_id),
+      employer_experience(employer_experience_id:id,name)
     `,
   });
 }

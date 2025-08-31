@@ -1,10 +1,12 @@
 import { TablePseudoLink } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import type { Skill } from "@/lib/schemas";
 import type { TableColumnDef } from "@/lib/types/table.types";
 import type { CellContext, Row } from "@tanstack/react-table";
 import { Trash } from "lucide-react";
 import { useMemo, type JSX } from "react";
+import type { useSkillsList } from "../resume";
+
+type Skill = NonNullable<ReturnType<typeof useSkillsList>["data"]>[number];
 
 export interface UseSkillTableColumnsParams {
   onUpdateClick: (row: Row<Skill>) => void;
@@ -15,10 +17,7 @@ export function useSkillTableColumns({
   onUpdateClick,
   onDeleteClick,
 }: UseSkillTableColumnsParams) {
-  function UpdateCell({
-    cell,
-    row,
-  }: CellContext<Skill, unknown>): JSX.Element {
+  function UpdateCell({ cell, row }: CellContext<Skill, unknown>): JSX.Element {
     return (
       <TablePseudoLink onClick={() => onUpdateClick(row)}>
         {cell.getValue() as string}

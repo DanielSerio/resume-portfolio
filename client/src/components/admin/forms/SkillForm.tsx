@@ -21,10 +21,16 @@ import {
   useUpdateSkillForm,
   useDeleteSkillForm,
 } from "@/hooks/admin";
-import { useCategoriesList, useSubcategoriesList } from "@/hooks/resume";
+import {
+  useCategoriesList,
+  useSubcategoriesList,
+  useEmployerExperiencesList,
+} from "@/hooks/resume";
 import type { Skill } from "@/lib/schemas";
 import type { Client } from "@/main";
 import { useRouteContext } from "@tanstack/react-router";
+import { useFieldArray } from "react-hook-form";
+import { Trash2, Plus } from "lucide-react";
 
 export interface SkillFormProps {
   mode: "create" | "update" | "delete";
@@ -62,10 +68,23 @@ function CreateSkillForm({
   const { form, handleSubmit, isLoading, error } = useCreateSkillForm();
   const categoriesQuery = useCategoriesList(supabase);
   const subcategoriesQuery = useSubcategoriesList(supabase);
+  const employerExperiencesQuery = useEmployerExperiencesList(supabase);
+
+  const {
+    fields: employerExperienceFields,
+    append: appendEmployerExperience,
+    remove: removeEmployerExperience,
+  } = useFieldArray({
+    control: form.control,
+    name: "employer_experience",
+  });
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 h-[86svh] flex flex-col flex-1 relative"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -168,6 +187,71 @@ function CreateSkillForm({
           )}
         />
 
+        <div className="space-y-4 flex-1 overflow-y-auto">
+          <div className="flex items-center justify-between">
+            <FormLabel>Employer Experiences</FormLabel>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendEmployerExperience({ id: "", name: "" })}
+              disabled={isLoading}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Experience
+            </Button>
+          </div>
+
+          {employerExperienceFields.map((field, index) => (
+            <div
+              key={field.id}
+              className="flex items-center gap-3 p-3 border rounded"
+            >
+              <FormField
+                control={form.control}
+                name={`employer_experiences.${index}.id`}
+                render={({ field: selectField }) => (
+                  <FormItem className="flex-1">
+                    <Select
+                      onValueChange={selectField.onChange}
+                      value={selectField.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an employer experience" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {(employerExperiencesQuery.data ?? []).map(
+                          (experience) => (
+                            <SelectItem
+                              key={experience.id}
+                              value={experience.id}
+                            >
+                              {experience.name}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeEmployerExperience(index)}
+                disabled={isLoading}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+
         {error && (
           <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
             {error.message}
@@ -201,10 +285,23 @@ function UpdateSkillForm({
   const { form, handleSubmit, isLoading, error } = useUpdateSkillForm(skill);
   const categoriesQuery = useCategoriesList(supabase);
   const subcategoriesQuery = useSubcategoriesList(supabase);
+  const employerExperiencesQuery = useEmployerExperiencesList(supabase);
+
+  const {
+    fields: employerExperienceFields,
+    append: appendEmployerExperience,
+    remove: removeEmployerExperience,
+  } = useFieldArray({
+    control: form.control,
+    name: "employer_experience",
+  });
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 h-[86svh] flex flex-col flex-1 relative"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -307,12 +404,75 @@ function UpdateSkillForm({
           )}
         />
 
+        <div className="space-y-4 flex-1 overflow-y-auto flex-1">
+          <div className="flex items-center justify-between">
+            <FormLabel>Employer Experiences</FormLabel>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendEmployerExperience({ id: "", name: "" })}
+              disabled={isLoading}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Experience
+            </Button>
+          </div>
+
+          {employerExperienceFields.map((field, index) => (
+            <div
+              key={field.id}
+              className="flex items-center gap-3 p-3 border rounded"
+            >
+              <FormField
+                control={form.control}
+                name={`employer_experiences.${index}.id`}
+                render={({ field: selectField }) => (
+                  <FormItem className="flex-1">
+                    <Select
+                      onValueChange={selectField.onChange}
+                      value={selectField.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an employer experience" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {(employerExperiencesQuery.data ?? []).map(
+                          (experience) => (
+                            <SelectItem
+                              key={experience.id}
+                              value={experience.id}
+                            >
+                              {experience.name}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeEmployerExperience(index)}
+                disabled={isLoading}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
         {error && (
           <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
             {error.message}
           </div>
         )}
-
         <div className="flex gap-3">
           <Button type="submit" className="flex-1" disabled={isLoading}>
             {isLoading ? "Updating..." : "Update Skill"}
