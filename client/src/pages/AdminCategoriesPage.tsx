@@ -6,58 +6,27 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useSelectedEntity } from "@/hooks/admin";
 import { useCategoryTable } from "@/hooks/admin/useCategoryTable";
+import { useCreateDeleteLaunchedAt } from "@/hooks/core/useLaunchedAt";
 import { useCategoriesList } from "@/hooks/resume";
 import type { SkillCategory } from "@/lib/schemas";
 import { useRouteContext } from "@tanstack/react-router";
-import type { Row } from "@tanstack/react-table";
-import { useCallback, useState } from "react";
-
-function useLaunchedAt() {
-  const [createLaunchedAt, setCreateLaunchedAt] = useState<Date | null>(null);
-
-  const setLaunchedAt = useCallback(
-    () => setCreateLaunchedAt(new Date()),
-    [setCreateLaunchedAt]
-  );
-
-  const clearLaunchedAt = useCallback(
-    () => setCreateLaunchedAt(null),
-    [setCreateLaunchedAt]
-  );
-
-  return [createLaunchedAt, { setLaunchedAt, clearLaunchedAt }] as const;
-}
 
 export function AdminCategoriesPage() {
   const { supabase } = useRouteContext({ from: "/admin/categories" });
 
   const query = useCategoriesList(supabase);
-  const [
-    createLaunchedAt,
-    {
-      setLaunchedAt: setCreateLaunchedAt,
-      clearLaunchedAt: clearCreateLaunchedAt,
-    },
-  ] = useLaunchedAt();
-  const [
-    deleteLaunchedAt,
-    {
-      setLaunchedAt: setDeleteLaunchedAt,
-      clearLaunchedAt: clearDeleteLaunchedAt,
-    },
-  ] = useLaunchedAt();
+  const [{ createLaunchedAt, deleteLaunchedAt }, { launch, clear }] =
+    useCreateDeleteLaunchedAt();
   const [selectedCategory, { select, unselect }] =
     useSelectedEntity<SkillCategory>();
 
   const dismissSheet = () => {
-    clearCreateLaunchedAt();
-    clearDeleteLaunchedAt();
+    clear();
     unselect();
   };
 
@@ -65,7 +34,7 @@ export function AdminCategoriesPage() {
     query,
     onDeleteClick: (row) => {
       select(row.original);
-      setDeleteLaunchedAt();
+      launch("delete");
     },
     onUpdateClick: (row) => select(row.original),
   });
@@ -84,9 +53,7 @@ export function AdminCategoriesPage() {
         gridTemplateColumns={gridTemplateColumns}
       />
       <div className="p-4">
-        <Button onClick={() => setCreateLaunchedAt()}>
-          Create a New Category
-        </Button>
+        <Button onClick={() => launch("create")}>Create a New Category</Button>
       </div>
       <Sheet
         open={selectedCategory !== null || createLaunchedAt !== null}
