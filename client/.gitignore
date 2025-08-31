@@ -28,6 +28,7 @@ dist-ssr
 supabase/*
 
 # dotenvx
+.env
 .env.keys
 .env.local
 .env.*.local

@@ -8,7 +8,7 @@ const PageComponent = (
   { className, children, ...props }: PageProps,
   ref?: ForwardedRef<HTMLAreaElement>
 ) => {
-  const classNames = cn("bg-background", className);
+  const classNames = cn(className);
 
   return (
     <main id="page" className={classNames} ref={ref} {...props}>

@@ -21,13 +21,13 @@ export function ResumeSection({
   ...props
 }: ResumeSectionProps) {
   return (
-    <section id={id} className={cn("flex flex-col", className)} {...props}>
+    <section id={id} className={cn("flex flex-col my-8", className)} {...props}>
       <div className="flex gap-x-4 items-center px-6 py-2">
         <Icon opacity={0.4} className="mt-1" />
-        <h1 className="text-4xl font-light ">{title}</h1>
+        <h1 className="text-4xl font-light">{title}</h1>
       </div>
 
-      <Separator />
+      <Separator className="mb-8" />
 
       <div className="flex flex-col px-12 py-4">{children}</div>
     </section>

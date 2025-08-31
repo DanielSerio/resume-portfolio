@@ -10,7 +10,7 @@ export interface HeaderProps
 export function Header({ children, className, ...props }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const classNames = cn(
-    "bg-background sticky top-0 z-50 w-full border-b",
+    "sticky top-0 z-50 w-full border-b bg-background dark:bg-gray-900",
     className
   );
   return (
