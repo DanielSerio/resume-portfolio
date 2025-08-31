@@ -9,6 +9,7 @@ import {
   type EmployerExperienceInsert,
   type EmployerExperienceUpdate,
 } from "@/lib/schemas";
+import { useRouteContext } from "@tanstack/react-router";
 
 // Delete confirmation schema - user must type the name to confirm
 const DeleteEmployerExperienceSchema = z.object({
@@ -16,13 +17,20 @@ const DeleteEmployerExperienceSchema = z.object({
 });
 
 export function useCreateEmployerExperienceForm() {
+  const { supabase } = useRouteContext({ from: "/admin/employer-experiences" });
+
   return useZodForm({
     schema: EmployerExperienceInsertSchema,
     queryKey: ["employer-experiences"],
     mutationFn: async (data: EmployerExperienceInsert) => {
-      // TODO: Implement create mutation
-      console.log("Creating employer experience:", data);
-      throw new Error("Not implemented");
+      const { data: insertedExperience, error } = await supabase
+        .from("employer_experience")
+        .insert(data)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return insertedExperience;
     },
     onSuccess: () => {
       console.log("Employer experience created successfully");
@@ -34,6 +42,8 @@ export function useCreateEmployerExperienceForm() {
 }
 
 export function useUpdateEmployerExperienceForm(employerExperience: EmployerExperience) {
+  const { supabase } = useRouteContext({ from: "/admin/employer-experiences" });
+
   return useZodForm({
     schema: EmployerExperienceUpdateSchema,
     queryKey: ["employer-experiences"],
@@ -41,9 +51,15 @@ export function useUpdateEmployerExperienceForm(employerExperience: EmployerExpe
       defaultValues: employerExperience,
     },
     mutationFn: async (data: EmployerExperienceUpdate) => {
-      // TODO: Implement update mutation
-      console.log("Updating employer experience:", { id: employerExperience.id, ...data });
-      throw new Error("Not implemented");
+      const { data: updatedExperience, error } = await supabase
+        .from("employer_experience")
+        .update(data)
+        .eq("id", employerExperience.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return updatedExperience;
     },
     onSuccess: () => {
       console.log("Employer experience updated successfully");
@@ -55,6 +71,7 @@ export function useUpdateEmployerExperienceForm(employerExperience: EmployerExpe
 }
 
 export function useDeleteEmployerExperienceForm(employerExperience: EmployerExperience) {
+  const { supabase } = useRouteContext({ from: "/admin/employer-experiences" });
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const deleteSchema = DeleteEmployerExperienceSchema.refine(
@@ -69,9 +86,22 @@ export function useDeleteEmployerExperienceForm(employerExperience: EmployerExpe
     schema: deleteSchema,
     queryKey: ["employer-experiences"],
     mutationFn: async () => {
-      // TODO: Implement delete mutation
-      console.log("Deleting employer experience:", employerExperience.id);
-      throw new Error("Not implemented");
+      // Delete join table relationships first (cascade delete)
+      const { error: joinError } = await supabase
+        .from("skill_employer_experience")
+        .delete()
+        .eq("employer_experience_id", employerExperience.id);
+
+      if (joinError) throw joinError;
+
+      // Delete the employer experience
+      const { error } = await supabase
+        .from("employer_experience")
+        .delete()
+        .eq("id", employerExperience.id);
+
+      if (error) throw error;
+      return { id: employerExperience.id };
     },
     onSuccess: () => {
       console.log("Employer experience deleted successfully");

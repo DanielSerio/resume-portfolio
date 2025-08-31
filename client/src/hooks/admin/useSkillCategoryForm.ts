@@ -9,6 +9,7 @@ import {
   type SkillCategoryInsert,
   type SkillCategoryUpdate,
 } from "@/lib/schemas";
+import { useRouteContext } from "@tanstack/react-router";
 
 // Delete confirmation schema - user must type the name to confirm
 const DeleteSkillCategorySchema = z.object({
@@ -16,13 +17,20 @@ const DeleteSkillCategorySchema = z.object({
 });
 
 export function useCreateSkillCategoryForm() {
+  const { supabase } = useRouteContext({ from: "/admin/categories" });
+
   return useZodForm({
     schema: SkillCategoryInsertSchema,
     queryKey: ["skill-categories"],
     mutationFn: async (data: SkillCategoryInsert) => {
-      // TODO: Implement create mutation
-      console.log("Creating skill category:", data);
-      throw new Error("Not implemented");
+      const { data: insertedCategory, error } = await supabase
+        .from("skill_category")
+        .insert(data)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return insertedCategory;
     },
     onSuccess: () => {
       console.log("Skill category created successfully");
@@ -34,6 +42,8 @@ export function useCreateSkillCategoryForm() {
 }
 
 export function useUpdateSkillCategoryForm(skillCategory: SkillCategory) {
+  const { supabase } = useRouteContext({ from: "/admin/categories" });
+
   return useZodForm({
     schema: SkillCategoryUpdateSchema,
     queryKey: ["skill-categories"],
@@ -41,9 +51,15 @@ export function useUpdateSkillCategoryForm(skillCategory: SkillCategory) {
       defaultValues: skillCategory,
     },
     mutationFn: async (data: SkillCategoryUpdate) => {
-      // TODO: Implement update mutation
-      console.log("Updating skill category:", { id: skillCategory.id, ...data });
-      throw new Error("Not implemented");
+      const { data: updatedCategory, error } = await supabase
+        .from("skill_category")
+        .update(data)
+        .eq("id", skillCategory.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return updatedCategory;
     },
     onSuccess: () => {
       console.log("Skill category updated successfully");
@@ -55,6 +71,7 @@ export function useUpdateSkillCategoryForm(skillCategory: SkillCategory) {
 }
 
 export function useDeleteSkillCategoryForm(skillCategory: SkillCategory) {
+  const { supabase } = useRouteContext({ from: "/admin/categories" });
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const deleteSchema = DeleteSkillCategorySchema.refine(
@@ -69,9 +86,13 @@ export function useDeleteSkillCategoryForm(skillCategory: SkillCategory) {
     schema: deleteSchema,
     queryKey: ["skill-categories"],
     mutationFn: async () => {
-      // TODO: Implement delete mutation
-      console.log("Deleting skill category:", skillCategory.id);
-      throw new Error("Not implemented");
+      const { error } = await supabase
+        .from("skill_category")
+        .delete()
+        .eq("id", skillCategory.id);
+
+      if (error) throw error;
+      return { id: skillCategory.id };
     },
     onSuccess: () => {
       console.log("Skill category deleted successfully");

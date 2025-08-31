@@ -30,7 +30,7 @@ export function useSkillTableColumns({
       {
         id: "id",
         label: "ID",
-        size: 130,
+        size: 60,
         accessorKey: "id",
         header: "ID",
         cell: UpdateCell,
@@ -38,7 +38,7 @@ export function useSkillTableColumns({
       {
         id: "name",
         label: "Name",
-        size: 150,
+        size: 60,
         accessorKey: "name",
         header: "Name",
         cell: UpdateCell,
@@ -46,7 +46,7 @@ export function useSkillTableColumns({
       {
         id: "category",
         label: "Category",
-        size: 120,
+        size: 60,
         accessorFn: (row) => row.category?.name || "No Category",
         header: "Category",
         cell: UpdateCell,
@@ -54,17 +54,17 @@ export function useSkillTableColumns({
       {
         id: "subcategory",
         label: "Subcategory",
-        size: 120,
+        size: 60,
         accessorFn: (row) => row.subcategory?.name || "None",
         header: "Subcategory",
         cell: UpdateCell,
       },
       {
         id: "comfort_level",
-        label: "Comfort Level",
-        size: 100,
+        label: "Comfort",
+        size: 60,
         accessorKey: "comfort_level",
-        header: "Comfort Level",
+        header: "Comfort",
         cell: UpdateCell,
       },
       {
