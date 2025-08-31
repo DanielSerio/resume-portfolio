@@ -1,6 +1,7 @@
 import { flexRender, type RowData } from "@tanstack/react-table";
 import type { TableProps } from "./Table.props";
 import { TableError } from "./subcomponents/TableError";
+import { TableSkeleton } from "./subcomponents/TableSkeleton";
 import { TRow } from "./subcomponents/TRow";
 import { TCol } from "./subcomponents/TCol";
 
@@ -41,13 +42,11 @@ export function Table<TableRowData extends RowData>({
         </div>
         <div>
           {isLoading ? (
-            <TRow gridTemplateColumns={gridTemplateColumns}>
-              <TCol>
-                <div className="h-24 flex items-center justify-center w-full">
-                  Loading...
-                </div>
-              </TCol>
-            </TRow>
+            <TableSkeleton 
+              gridTemplateColumns={gridTemplateColumns}
+              columns={table.getAllColumns().length}
+              rows={5}
+            />
           ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TRow key={row.id} gridTemplateColumns={gridTemplateColumns}>

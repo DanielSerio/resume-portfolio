@@ -56,15 +56,14 @@ export function useSubcategoryTableColumns({
         size: 60,
         cell({ row }) {
           return (
-            <TablePseudoLink onClick={() => onDeleteClick(row)}>
-              <Button
-                className="w-[24px] h-[24px]"
-                variant="destructive"
-                size="icon"
-              >
-                <Trash />
-              </Button>
-            </TablePseudoLink>
+            <Button
+              className="w-[24px] h-[24px]"
+              variant="destructive"
+              size="icon"
+              onClick={() => onDeleteClick(row)}
+            >
+              <Trash />
+            </Button>
           );
         },
       },
