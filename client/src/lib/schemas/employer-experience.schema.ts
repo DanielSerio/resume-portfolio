@@ -1,17 +1,19 @@
 import { z } from "zod";
 
 export const EmployerExperienceSchema = z.object({
-  id: z.string(),
+  employer_experience_id: z.string(),
   name: z.string(),
 });
 
 export const EmployerExperienceInsertSchema = z.object({
-  id: z.string().optional(),
   name: z.string(),
-});
+}).transform(({ name }) => ({
+  name,
+  employer_experience_id: encodeURIComponent(name)
+}));
 
 export const EmployerExperienceUpdateSchema = z.object({
-  id: z.string().optional(),
+  employer_experience_id: z.string().optional(),
   name: z.string().optional(),
 });
 

@@ -8,6 +8,7 @@ export const SkillSchema = z.object({
   subcategory_id: z.string().nullable(),
   comfort_level: z.number(),
   last_updated_at: z.string(),
+  employer_experience: z.array(EmployerExperienceSchema).optional(),
 });
 
 export const SkillInsertSchema = z.object({
@@ -17,7 +18,9 @@ export const SkillInsertSchema = z.object({
   subcategory_id: z.string().nullable().optional(),
   comfort_level: z.number().optional(),
   last_updated_at: z.string().optional(),
-  employer_experience: z.array(EmployerExperienceSchema)
+  employer_experience: z.array(EmployerExperienceSchema.omit({
+    name: true
+  }))
 });
 
 export const SkillUpdateSchema = z.object({
@@ -27,7 +30,9 @@ export const SkillUpdateSchema = z.object({
   subcategory_id: z.string().nullable().optional(),
   comfort_level: z.number().optional(),
   last_updated_at: z.string().optional(),
-  employer_experience: z.array(EmployerExperienceSchema)
+  employer_experience: z.array(EmployerExperienceSchema.omit({
+    name: true
+  }))
 });
 
 export type Skill = z.infer<typeof SkillSchema>;

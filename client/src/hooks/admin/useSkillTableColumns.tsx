@@ -74,8 +74,8 @@ export function useSkillTableColumns({
         cell({ row }) {
           return (
             <Button
-              className="w-[24px] h-[24px]"
-              variant="destructive"
+              className="w-[24px] h-[24px] text-destructive"
+              variant="ghost"
               size="icon"
               onClick={() => onDeleteClick(row)}
             >

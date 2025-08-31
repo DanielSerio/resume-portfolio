@@ -4,7 +4,7 @@ import type { SkillCategory } from "@/lib/schemas";
 import type { TableColumnDef } from "@/lib/types/table.types";
 import type { CellContext, Row } from "@tanstack/react-table";
 import { Trash } from "lucide-react";
-import { useMemo, type JSX, type PropsWithChildren } from "react";
+import { useMemo, type JSX } from "react";
 
 export interface UseCategoryTableColumnsParams {
   onUpdateClick: (row: Row<SkillCategory>) => void;
@@ -57,8 +57,8 @@ export function useCategoryTableColumns({
         cell({ row }) {
           return (
             <Button
-              className="w-[24px] h-[24px]"
-              variant="destructive"
+              className="w-[24px] h-[24px] text-destructive"
+              variant="ghost"
               size="icon"
               onClick={() => onDeleteClick(row)}
             >

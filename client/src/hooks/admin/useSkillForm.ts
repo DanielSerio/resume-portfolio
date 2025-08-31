@@ -4,7 +4,6 @@ import { useZodForm } from "../core/useZodForm";
 import {
   SkillInsertSchema,
   SkillUpdateSchema,
-  SkillSchema,
   type Skill,
   type SkillInsert,
   type SkillUpdate,
@@ -34,11 +33,19 @@ export function useCreateSkillForm() {
 }
 
 export function useUpdateSkillForm(skill: Skill) {
+  // Transform the skill data to match form structure
+  const defaultValues = {
+    ...skill,
+    employer_experience: skill.employer_experience || [],
+  };
+
+  console.info('useUpdateSkillForm defaultValues', defaultValues);
+
   return useZodForm({
     schema: SkillUpdateSchema,
     queryKey: ["skills"],
     formOptions: {
-      defaultValues: skill,
+      defaultValues,
     },
     mutationFn: async (data: SkillUpdate) => {
       // TODO: Implement update mutation

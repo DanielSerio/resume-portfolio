@@ -194,7 +194,9 @@ function CreateSkillForm({
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => appendEmployerExperience({ id: "", name: "" })}
+              onClick={() =>
+                appendEmployerExperience({ employer_experience_id: "" })
+              }
               disabled={isLoading}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -209,7 +211,7 @@ function CreateSkillForm({
             >
               <FormField
                 control={form.control}
-                name={`employer_experiences.${index}.id`}
+                name={`employer_experience.${index}.employer_experience_id`}
                 render={({ field: selectField }) => (
                   <FormItem className="flex-1">
                     <Select
@@ -411,7 +413,11 @@ function UpdateSkillForm({
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => appendEmployerExperience({ id: "", name: "" })}
+              onClick={() =>
+                appendEmployerExperience({
+                  employer_experience_id: "",
+                })
+              }
               disabled={isLoading}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -426,7 +432,7 @@ function UpdateSkillForm({
             >
               <FormField
                 control={form.control}
-                name={`employer_experiences.${index}.id`}
+                name={`employer_experience.${index}.employer_experience_id`}
                 render={({ field: selectField }) => (
                   <FormItem className="flex-1">
                     <Select

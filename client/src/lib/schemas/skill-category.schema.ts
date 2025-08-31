@@ -6,9 +6,11 @@ export const SkillCategorySchema = z.object({
 });
 
 export const SkillCategoryInsertSchema = z.object({
-  id: z.string().optional(),
   name: z.string(),
-});
+}).transform(({ name }) => ({
+  name,
+  id: encodeURIComponent(name)
+}));
 
 export const SkillCategoryUpdateSchema = z.object({
   id: z.string().optional(),
