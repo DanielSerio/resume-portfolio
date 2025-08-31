@@ -1,3 +1,4 @@
+export * from "./auth.schema"
 export * from "./employer-experience.schema"
 export * from "./skill-category.schema"
 export * from "./skill-subcategory.schema"

@@ -15,3 +15,7 @@
 .layout > #page {
   @apply flex-1;
 }
+
+.layout.admin {
+  flex: 1;
+}

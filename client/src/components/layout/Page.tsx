@@ -2,13 +2,15 @@ import { cn } from "@/lib/utils";
 import { forwardRef, type AreaHTMLAttributes, type ForwardedRef } from "react";
 
 export interface PageProps
-  extends Omit<AreaHTMLAttributes<HTMLAreaElement>, "id"> {}
+  extends Omit<AreaHTMLAttributes<HTMLAreaElement>, "id"> {
+  center?: boolean;
+}
 
 const PageComponent = (
-  { className, children, ...props }: PageProps,
+  { className, children, center, ...props }: PageProps,
   ref?: ForwardedRef<HTMLAreaElement>
 ) => {
-  const classNames = cn(className);
+  const classNames = cn(center ? `grid place-content-center` : null, className);
 
   return (
     <main id="page" className={classNames} ref={ref} {...props}>
