@@ -1,14 +1,20 @@
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  getCoreRowModel,
+  useReactTable,
+  type Row,
+} from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { useCategoriesList } from "../resume";
 import { useCategoryTableColumns } from "./useCategoryTableColumns";
 import { getTableRowSizeProps } from "@/lib/utils";
 
+type Data = NonNullable<ReturnType<typeof useCategoriesList>["data"]>[number];
+
 export interface UseCategoryTableParams {
   query: ReturnType<typeof useCategoriesList>;
+  onDeleteClick: (row: Row<Data>) => void;
+  onUpdateClick: (row: Row<Data>) => void;
 }
-
-type Data = NonNullable<ReturnType<typeof useCategoriesList>["data"]>[number];
 
 const BLANK_DATA = [] as Data[];
 
