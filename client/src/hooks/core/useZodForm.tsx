@@ -29,9 +29,9 @@ export function useZodForm<T extends z.ZodType>({
 
   const mutation = useMutation({
     mutationFn,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (queryKey) {
-        queryClient.invalidateQueries({ queryKey });
+        await queryClient.invalidateQueries({ queryKey });
       }
       onSuccess?.(data);
       form.reset();

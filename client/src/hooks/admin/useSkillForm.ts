@@ -25,6 +25,7 @@ export function useCreateSkillForm({ onSuccess, onError }: SkillFormParams) {
 
   return useZodForm({
     schema: SkillInsertSchema,
+    queryKey: ["skills"],
     formOptions: {
       defaultValues: {
         name: "",
@@ -83,6 +84,7 @@ export function useUpdateSkillForm(skill: Skill, { onSuccess, onError }: SkillFo
 
   return useZodForm({
     schema: SkillUpdateSchema,
+    queryKey: ["skills"],
     formOptions: {
       defaultValues,
     },
@@ -146,6 +148,7 @@ export function useDeleteSkillForm(skill: Skill, { onSuccess, onError }: SkillFo
 
   const form = useZodForm({
     schema: deleteSchema,
+    queryKey: ["skills"],
     mutationFn: async () => {
       // Delete join table relationships first
       const { error: joinError } = await supabase

@@ -4,24 +4,28 @@ import { useZodForm } from "../core/useZodForm";
 import {
   SkillSubcategoryInsertSchema,
   SkillSubcategoryUpdateSchema,
-  SkillSubcategorySchema,
   type SkillSubcategory,
   type SkillSubcategoryInsert,
   type SkillSubcategoryUpdate,
 } from "@/lib/schemas";
 import { useRouteContext } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 // Delete confirmation schema - user must type the name to confirm
 const DeleteSkillSubcategorySchema = z.object({
   confirmName: z.string(),
 });
 
-export function useCreateSkillSubcategoryForm() {
+export interface UseSubcategoryFormProps {
+  onSuccess: () => void;
+}
+
+export function useCreateSkillSubcategoryForm({ onSuccess }: UseSubcategoryFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/subcategories" });
 
   return useZodForm({
     schema: SkillSubcategoryInsertSchema,
-    queryKey: ["skill-subcategories"],
+    queryKey: ["subcategories"],
     mutationFn: async (data: SkillSubcategoryInsert) => {
       const { data: insertedSubcategory, error } = await supabase
         .from("skill_subcategory")
@@ -32,21 +36,21 @@ export function useCreateSkillSubcategoryForm() {
       if (error) throw error;
       return insertedSubcategory;
     },
-    onSuccess: () => {
-      console.log("Skill subcategory created successfully");
+    onSuccess: async () => {
+      await toast.success("Subcategory created successfully");
+      onSuccess();
     },
-    onError: (error) => {
-      console.error("Failed to create skill subcategory:", error);
+    onError: async (error) => {
+      await toast.error("Failed to create subcategory:", error);
     },
   });
 }
 
-export function useUpdateSkillSubcategoryForm(skillSubcategory: SkillSubcategory) {
+export function useUpdateSkillSubcategoryForm(skillSubcategory: SkillSubcategory, { onSuccess }: UseSubcategoryFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/subcategories" });
-
   return useZodForm({
     schema: SkillSubcategoryUpdateSchema,
-    queryKey: ["skill-subcategories"],
+    queryKey: ["subcategories"],
     formOptions: {
       defaultValues: skillSubcategory,
     },
@@ -61,16 +65,17 @@ export function useUpdateSkillSubcategoryForm(skillSubcategory: SkillSubcategory
       if (error) throw error;
       return updatedSubcategory;
     },
-    onSuccess: () => {
-      console.log("Skill subcategory updated successfully");
+    onSuccess: async () => {
+      await toast.success("Subcategory updated successfully");
+      onSuccess();
     },
     onError: (error) => {
-      console.error("Failed to update skill subcategory:", error);
+      toast.error("Failed to update subcategory:", error);
     },
   });
 }
 
-export function useDeleteSkillSubcategoryForm(skillSubcategory: SkillSubcategory) {
+export function useDeleteSkillSubcategoryForm(skillSubcategory: SkillSubcategory, { onSuccess }: UseSubcategoryFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/subcategories" });
   const [isConfirmed, setIsConfirmed] = useState(false);
 
@@ -84,7 +89,7 @@ export function useDeleteSkillSubcategoryForm(skillSubcategory: SkillSubcategory
 
   const form = useZodForm({
     schema: deleteSchema,
-    queryKey: ["skill-subcategories"],
+    queryKey: ["subcategories"],
     mutationFn: async () => {
       const { error } = await supabase
         .from("skill_subcategory")
@@ -94,12 +99,13 @@ export function useDeleteSkillSubcategoryForm(skillSubcategory: SkillSubcategory
       if (error) throw error;
       return { id: skillSubcategory.id };
     },
-    onSuccess: () => {
-      console.log("Skill subcategory deleted successfully");
+    onSuccess: async () => {
+      await toast.success("Subcategory deleted successfully");
       setIsConfirmed(false);
+      onSuccess();
     },
     onError: (error) => {
-      console.error("Failed to delete skill subcategory:", error);
+      toast.error("Failed to delete subcategory:", error);
     },
   });
 

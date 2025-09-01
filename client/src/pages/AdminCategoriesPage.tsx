@@ -48,12 +48,18 @@ export function AdminCategoriesPage() {
   return (
     <Page>
       <Table
+        testId="categories-list"
         isLoading={query.isLoading}
         table={table}
         gridTemplateColumns={gridTemplateColumns}
       />
       <div className="p-4">
-        <Button onClick={() => launch("create")}>Create a New Category</Button>
+        <Button
+          data-testid="add-category-button"
+          onClick={() => launch("create")}
+        >
+          Create a New Category
+        </Button>
       </div>
       <Sheet
         open={selectedCategory !== null || createLaunchedAt !== null}

@@ -21,7 +21,7 @@ export function useCreateSkillCategoryForm() {
 
   return useZodForm({
     schema: SkillCategoryInsertSchema,
-    queryKey: ["skill-categories"],
+    queryKey: ["categories"],
     mutationFn: async (data: SkillCategoryInsert) => {
       const { data: insertedCategory, error } = await supabase
         .from("skill_category")
@@ -46,7 +46,7 @@ export function useUpdateSkillCategoryForm(skillCategory: SkillCategory) {
 
   return useZodForm({
     schema: SkillCategoryUpdateSchema,
-    queryKey: ["skill-categories"],
+    queryKey: ["categories"],
     formOptions: {
       defaultValues: skillCategory,
     },
@@ -84,7 +84,7 @@ export function useDeleteSkillCategoryForm(skillCategory: SkillCategory) {
 
   const form = useZodForm({
     schema: deleteSchema,
-    queryKey: ["skill-categories"],
+    queryKey: ["categories"],
     mutationFn: async () => {
       const { error } = await supabase
         .from("skill_category")

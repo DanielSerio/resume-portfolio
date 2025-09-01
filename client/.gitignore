@@ -35,3 +35,7 @@ supabase/*
 
 *storybook.log
 storybook-static
+
+src/test-results/*
+playwright-report/*
+test-results/*

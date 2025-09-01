@@ -18,36 +18,51 @@ import type { SkillSubcategory } from "@/lib/schemas";
 export interface SubcategoryFormProps {
   mode: "create" | "update" | "delete";
   subcategory?: SkillSubcategory;
+  onSuccess: () => void;
   onCancel?: () => void;
 }
 
 export function SubcategoryForm({
   mode,
   subcategory,
+  onSuccess,
   onCancel,
 }: SubcategoryFormProps) {
   if (mode === "create") {
-    return <CreateSubcategoryForm onCancel={onCancel} />;
+    return <CreateSubcategoryForm onCancel={onCancel} onSuccess={onSuccess} />;
   }
 
   if (mode === "update" && subcategory) {
     return (
-      <UpdateSubcategoryForm subcategory={subcategory} onCancel={onCancel} />
+      <UpdateSubcategoryForm
+        subcategory={subcategory}
+        onCancel={onCancel}
+        onSuccess={onSuccess}
+      />
     );
   }
 
   if (mode === "delete" && subcategory) {
     return (
-      <DeleteSubcategoryForm subcategory={subcategory} onCancel={onCancel} />
+      <DeleteSubcategoryForm
+        subcategory={subcategory}
+        onCancel={onCancel}
+        onSuccess={onSuccess}
+      />
     );
   }
 
   return null;
 }
 
-function CreateSubcategoryForm({ onCancel }: { onCancel?: () => void }) {
+interface Methods {
+  onCancel?: () => void;
+  onSuccess: () => void;
+}
+
+function CreateSubcategoryForm({ onCancel, onSuccess }: Methods) {
   const { form, handleSubmit, isLoading, error } =
-    useCreateSkillSubcategoryForm();
+    useCreateSkillSubcategoryForm({ onSuccess });
 
   return (
     <Form {...form}>
@@ -60,6 +75,7 @@ function CreateSubcategoryForm({ onCancel }: { onCancel?: () => void }) {
               <FormLabel>Subcategory Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="subcategory-name-input"
                   placeholder="Enter subcategory name"
                   {...field}
                   disabled={isLoading}
@@ -77,7 +93,12 @@ function CreateSubcategoryForm({ onCancel }: { onCancel?: () => void }) {
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" className="flex-1" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="flex-1"
+            disabled={isLoading}
+            data-testid="save-subcategory-button"
+          >
             {isLoading ? "Creating..." : "Create Subcategory"}
           </Button>
           {onCancel && (
@@ -91,15 +112,17 @@ function CreateSubcategoryForm({ onCancel }: { onCancel?: () => void }) {
   );
 }
 
+interface WithEntityMethods extends Methods {
+  subcategory: SkillSubcategory;
+}
+
 function UpdateSubcategoryForm({
   subcategory,
+  onSuccess,
   onCancel,
-}: {
-  subcategory: SkillSubcategory;
-  onCancel?: () => void;
-}) {
+}: WithEntityMethods) {
   const { form, handleSubmit, isLoading, error } =
-    useUpdateSkillSubcategoryForm(subcategory);
+    useUpdateSkillSubcategoryForm(subcategory, { onSuccess });
 
   return (
     <Form {...form}>
@@ -112,6 +135,7 @@ function UpdateSubcategoryForm({
               <FormLabel>Subcategory Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="subcategory-name-input"
                   placeholder="Enter subcategory name"
                   {...field}
                   disabled={isLoading}
@@ -129,7 +153,12 @@ function UpdateSubcategoryForm({
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" className="flex-1" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="flex-1"
+            disabled={isLoading}
+            data-testid="save-subcategory-button"
+          >
             {isLoading ? "Updating..." : "Update Subcategory"}
           </Button>
           {onCancel && (
@@ -145,13 +174,11 @@ function UpdateSubcategoryForm({
 
 function DeleteSubcategoryForm({
   subcategory,
+  onSuccess,
   onCancel,
-}: {
-  subcategory: SkillSubcategory;
-  onCancel?: () => void;
-}) {
+}: WithEntityMethods) {
   const { form, handleSubmit, isLoading, error } =
-    useDeleteSkillSubcategoryForm(subcategory);
+    useDeleteSkillSubcategoryForm(subcategory, { onSuccess });
 
   return (
     <Form {...form}>

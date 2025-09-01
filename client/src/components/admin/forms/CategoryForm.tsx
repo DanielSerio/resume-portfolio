@@ -51,6 +51,7 @@ function CreateCategoryForm({ onCancel }: { onCancel?: () => void }) {
               <FormLabel>Category Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="category-name-input"
                   placeholder="Enter category name"
                   {...field}
                   disabled={isLoading}
@@ -68,11 +69,11 @@ function CreateCategoryForm({ onCancel }: { onCancel?: () => void }) {
         )}
 
         <div className="flex gap-3">
-          <Button className="flex-1" type="submit" disabled={isLoading}>
+          <Button data-testid="save-category-button" className="flex-1" type="submit" disabled={isLoading}>
             {isLoading ? "Creating..." : "Create Category"}
           </Button>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button data-testid="cancel-edit-button" type="button" variant="outline" onClick={onCancel}>
               Cancel
             </Button>
           )}
@@ -103,6 +104,7 @@ function UpdateCategoryForm({
               <FormLabel>Category Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="category-name-input"
                   placeholder="Enter category name"
                   {...field}
                   disabled={isLoading}
@@ -120,11 +122,11 @@ function UpdateCategoryForm({
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" className="flex-1" disabled={isLoading}>
+          <Button data-testid="save-category-button" type="submit" className="flex-1" disabled={isLoading}>
             {isLoading ? "Updating..." : "Update Category"}
           </Button>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button data-testid="cancel-edit-button" type="button" variant="outline" onClick={onCancel}>
               Cancel
             </Button>
           )}
@@ -165,6 +167,7 @@ function DeleteCategoryForm({
               <FormLabel>Type "{category.name}" to confirm deletion</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="confirm-delete-input"
                   placeholder={`Type "${category.name}" here`}
                   {...field}
                   disabled={isLoading}
@@ -183,6 +186,7 @@ function DeleteCategoryForm({
 
         <div className="flex gap-3">
           <Button
+            data-testid="confirm-delete-button"
             type="submit"
             className="flex-1"
             disabled={isLoading}
@@ -191,7 +195,7 @@ function DeleteCategoryForm({
             {isLoading ? "Deleting..." : "Delete Category"}
           </Button>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button data-testid="cancel-edit-button" type="button" variant="outline" onClick={onCancel}>
               Cancel
             </Button>
           )}
