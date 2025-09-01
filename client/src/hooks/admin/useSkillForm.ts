@@ -15,15 +15,29 @@ const DeleteSkillSchema = z.object({
   confirmName: z.string(),
 });
 
-export function useCreateSkillForm() {
+export interface SkillFormParams {
+  onSuccess: () => void;
+  onError: (error: Error) => void;
+}
+
+export function useCreateSkillForm({ onSuccess, onError }: SkillFormParams) {
   const { supabase } = useRouteContext({ from: "/admin/skills" });
 
   return useZodForm({
     schema: SkillInsertSchema,
-    queryKey: ["skills"],
+    formOptions: {
+      defaultValues: {
+        name: "",
+        category_id: "",
+        subcategory_id: null,
+        comfort_level: 1,
+        last_updated_at: new Date().toISOString(),
+        employer_experience: [],
+      },
+    },
     mutationFn: async (data: SkillInsert) => {
       const { employer_experience, ...skillData } = data;
-      
+
       // Insert the skill first
       const { data: insertedSkill, error: skillError } = await supabase
         .from("skill")
@@ -53,35 +67,28 @@ export function useCreateSkillForm() {
 
       return insertedSkill;
     },
-    onSuccess: () => {
-      console.log("Skill created successfully");
-    },
-    onError: (error) => {
-      console.error("Failed to create skill:", error);
-    },
+    onSuccess,
+    onError,
   });
 }
 
-export function useUpdateSkillForm(skill: Skill) {
+export function useUpdateSkillForm(skill: Skill, { onSuccess, onError }: SkillFormParams) {
   const { supabase } = useRouteContext({ from: "/admin/skills" });
-  
+
   // Transform the skill data to match form structure
   const defaultValues = {
     ...skill,
     employer_experience: skill.employer_experience || [],
   };
 
-  console.info('useUpdateSkillForm defaultValues', defaultValues);
-
   return useZodForm({
     schema: SkillUpdateSchema,
-    queryKey: ["skills"],
     formOptions: {
       defaultValues,
     },
     mutationFn: async (data: SkillUpdate) => {
       const { employer_experience, ...skillData } = data;
-      
+
       // Update the skill first
       const { data: updatedSkill, error: skillError } = await supabase
         .from("skill")
@@ -120,16 +127,12 @@ export function useUpdateSkillForm(skill: Skill) {
 
       return updatedSkill;
     },
-    onSuccess: () => {
-      console.log("Skill updated successfully");
-    },
-    onError: (error) => {
-      console.error("Failed to update skill:", error);
-    },
+    onSuccess,
+    onError,
   });
 }
 
-export function useDeleteSkillForm(skill: Skill) {
+export function useDeleteSkillForm(skill: Skill, { onSuccess, onError }: SkillFormParams) {
   const { supabase } = useRouteContext({ from: "/admin/skills" });
   const [isConfirmed, setIsConfirmed] = useState(false);
 
@@ -143,7 +146,6 @@ export function useDeleteSkillForm(skill: Skill) {
 
   const form = useZodForm({
     schema: deleteSchema,
-    queryKey: ["skills"],
     mutationFn: async () => {
       // Delete join table relationships first
       const { error: joinError } = await supabase
@@ -163,13 +165,8 @@ export function useDeleteSkillForm(skill: Skill) {
 
       return { id: skill.id };
     },
-    onSuccess: () => {
-      console.log("Skill deleted successfully");
-      setIsConfirmed(false);
-    },
-    onError: (error) => {
-      console.error("Failed to delete skill:", error);
-    },
+    onSuccess,
+    onError,
   });
 
   return {

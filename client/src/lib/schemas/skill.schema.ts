@@ -12,19 +12,20 @@ export const SkillSchema = z.object({
 });
 
 export const SkillInsertSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().nullable().optional(),
-  category_id: z.string().optional(),
+  name: z.string(),
+  category_id: z.string(),
   subcategory_id: z.string().nullable().optional(),
-  comfort_level: z.number().optional(),
-  last_updated_at: z.string().optional(),
+  comfort_level: z.number(),
   employer_experience: z.array(EmployerExperienceSchema.omit({
     name: true
   }))
-});
+}).transform((record) => ({
+  ...record,
+  id: encodeURIComponent(record.name!.toLowerCase()),
+  last_updated_at: new Date().toISOString(),
+}));
 
 export const SkillUpdateSchema = z.object({
-  id: z.string().optional(),
   name: z.string().nullable().optional(),
   category_id: z.string().optional(),
   subcategory_id: z.string().nullable().optional(),

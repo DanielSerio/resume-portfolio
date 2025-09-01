@@ -33,7 +33,7 @@ export function useSkillTable({
     }
 
     return query.data;
-  }, [query.isLoading]);
+  }, [query.isLoading, query.data]);
 
   const table = useReactTable({
     columns,

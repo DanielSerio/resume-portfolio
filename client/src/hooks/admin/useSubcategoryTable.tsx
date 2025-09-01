@@ -8,7 +8,9 @@ import type { useSubcategoriesList } from "../resume";
 import { useSubcategoryTableColumns } from "./useSubcategoryTableColumns";
 import { getTableRowSizeProps } from "@/lib/utils";
 
-type Data = NonNullable<ReturnType<typeof useSubcategoriesList>["data"]>[number];
+type Data = NonNullable<
+  ReturnType<typeof useSubcategoriesList>["data"]
+>[number];
 
 export interface UseSubcategoryTableParams {
   query: ReturnType<typeof useSubcategoriesList>;
@@ -33,7 +35,7 @@ export function useSubcategoryTable({
     }
 
     return query.data;
-  }, [query.isLoading]);
+  }, [query.isLoading, query.data]);
 
   const table = useReactTable({
     columns,

@@ -6,7 +6,7 @@ import { useSimpleListQuery } from "../core/useSimpleListQuery";
  */
 export function useSkillsList(supabase: Client) {
   return useSimpleListQuery({
-    queryKey: ["skills"],
+    queryKey: ["skills", "list"],
     supabase,
     from: "skill",
     select: `

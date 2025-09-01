@@ -8,7 +8,9 @@ import type { useEmployerExperiencesList } from "../resume";
 import { useEmployerExperienceTableColumns } from "./useEmployerExperienceTableColumns";
 import { getTableRowSizeProps } from "@/lib/utils";
 
-type Data = NonNullable<ReturnType<typeof useEmployerExperiencesList>["data"]>[number];
+type Data = NonNullable<
+  ReturnType<typeof useEmployerExperiencesList>["data"]
+>[number];
 
 export interface UseEmployerExperienceTableParams {
   query: ReturnType<typeof useEmployerExperiencesList>;
@@ -33,7 +35,7 @@ export function useEmployerExperienceTable({
     }
 
     return query.data;
-  }, [query.isLoading]);
+  }, [query.isLoading, query.data]);
 
   const table = useReactTable({
     columns,

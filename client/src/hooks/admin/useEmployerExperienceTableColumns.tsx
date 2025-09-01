@@ -1,10 +1,15 @@
 import { TablePseudoLink } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import type { EmployerExperience } from "@/lib/schemas";
+
 import type { TableColumnDef } from "@/lib/types/table.types";
 import type { CellContext, Row } from "@tanstack/react-table";
 import { Trash } from "lucide-react";
 import { useMemo, type JSX } from "react";
+import type { useEmployerExperiencesList } from "../resume";
+
+type EmployerExperience = NonNullable<
+  ReturnType<typeof useEmployerExperiencesList>["data"]
+>[number];
 
 export interface UseEmployerExperienceTableColumnsParams {
   onUpdateClick: (row: Row<EmployerExperience>) => void;
