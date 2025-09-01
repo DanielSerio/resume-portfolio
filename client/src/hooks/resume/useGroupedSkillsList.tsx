@@ -28,26 +28,24 @@ function groupSkillsDataByCategory(skills: SkillObject[]) {
   const grouped: Record<string, Record<string, SkillObject[]>> = {};
 
   for (const skill of skills) {
+    // Initialize category if it doesn't exist
     if (!grouped[skill.category_id]) {
-      grouped[skill.category_id] = {
-        null: [],
-      };
-
-      if (
-        skill.subcategory_id &&
-        !grouped[skill.category_id][skill.subcategory_id]
-      ) {
-        grouped[skill.category_id][skill.subcategory_id] = [skill];
-      } else if (!skill.subcategory_id) {
-        grouped[skill.category_id]["null"].push(skill);
-      } else if (
-        skill.subcategory_id &&
-        grouped[skill.category_id][skill.subcategory_id]
-      ) {
-        grouped[skill.category_id][skill.subcategory_id].push(skill);
-      }
+      grouped[skill.category_id] = {};
     }
+
+    // Determine subcategory key (use "null" for skills without subcategory)
+    const subcategoryKey = skill.subcategory_id || "null";
+
+    // Initialize subcategory array if it doesn't exist
+    if (!grouped[skill.category_id][subcategoryKey]) {
+      grouped[skill.category_id][subcategoryKey] = [];
+    }
+
+    // Add skill to the appropriate group
+    grouped[skill.category_id][subcategoryKey].push(skill);
   }
+
+  console.info(skills, grouped);
 
   return grouped;
 }
@@ -58,8 +56,9 @@ function groupSkillsDataByCategory(skills: SkillObject[]) {
  */
 export function useGroupedSkillsList(supabase: Client) {
   return useQuery({
-    queryKey: ["skills"],
+    queryKey: ["skills", "grouped"],
     queryFn: async () => groupSkillsDataByCategory(await query(supabase)),
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 }
 
