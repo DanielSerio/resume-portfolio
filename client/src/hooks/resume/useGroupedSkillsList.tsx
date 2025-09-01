@@ -34,15 +34,20 @@ function applyFiltersToSkills(
   // Apply search filter
   if (filters.search.trim()) {
     const searchTerm = filters.search.toLowerCase().trim();
-    filteredSkills = filteredSkills.filter(
-      (skill) =>
-        skill.name!.toLowerCase().includes(searchTerm) ||
-        skill.category?.name.toLowerCase().includes(searchTerm) ||
-        skill.subcategory?.name.toLowerCase().includes(searchTerm) ||
-        skill.employer_experience?.some((emp) =>
-          emp.name.toLowerCase().includes(searchTerm)
-        )
-    );
+    console.log("Searching for:", searchTerm);
+    console.log("Total skills before filter:", filteredSkills.length);
+
+    filteredSkills = filteredSkills.filter((skill) => {
+      const matchesName = skill.name?.toLowerCase().includes(searchTerm);
+
+      if (matchesName) {
+        console.log(`Match found: ${skill.name} (name: ${matchesName})`);
+      }
+
+      return matchesName;
+    });
+
+    console.log("Skills after search filter:", filteredSkills.length);
   }
 
   // Apply category filter
