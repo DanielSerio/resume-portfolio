@@ -54,8 +54,8 @@ export function ResumeHeader() {
 
   return (
     <Header>
-      <div className="flex flex-col sm:flex-row items-center justify-between">
-        <div className="px-4 mt-6 mb-10 sm:my-0 text-center translate-x-8 sm:translate-x-0">
+      <div className="flex flex-col min-h-[304px] md:min-h-auto md:flex-row items-center justify-between">
+        <div className="px-4 mt-6 mb-10 md:my-0 text-center translate-x-8 md:translate-x-0">
           <h1 className="text-5xl font-light mb-0" style={{ letterSpacing: 2 }}>
             Dan Serio
           </h1>
