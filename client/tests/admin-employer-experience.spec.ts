@@ -1,5 +1,5 @@
-import { Page } from 'playwright/test';
 import { authenticatedTest as test, expect } from './setup/test-setup';
+import { testEmployerExperiences } from './fixtures';
 
 test.describe('Admin Employer Experience CRUD Operations', () => {
   test.beforeEach(async ({ page }) => {
@@ -10,57 +10,29 @@ test.describe('Admin Employer Experience CRUD Operations', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  const getUtility = (page: Page, name: string) => {
-    const ID = encodeURIComponent(name);
-
-    const getCreate = () => {
-      return async () => {
-        await page.click('[data-testid="add-employer-experience-button"]');
-
-        // Fill in the form (only name field based on simplified schema)
-        await page.fill('[data-testid="employer-name-input"]', name);
-
-        // Submit the form
-        await page.click('[data-testid="save-employer-experience-button"]');
-
-        // Wait for the success message
-        await expect(page.locator('text=Employer experience created successfully')).toBeVisible();
-      };
-    };
-
-    const getDelete = () => {
-      return async () => {
-        await page.click(`[data-testid="delete-employer-experience-${ID}"]`);
-
-        await page.fill('[data-testid="employer-experience-delete-input"]', name);
-
-        await page.click('[data-testid="employer-experience-delete-button"]');
-      };
-    };
-
-    return {
-      ID,
-      getCreate,
-      getDelete
-    };
-  };
-
   test('should display existing employer experiences in the list', async ({ page }) => {
     // Check that the employer experiences list is visible
     await expect(page.locator('[data-testid="employer-experiences-list"]')).toBeVisible();
 
-    // Verify that test employer experiences are displayed
-    await expect(page.locator('text=Accumedix, Inc')).toBeVisible();
+    // Verify that test employer experiences from fixtures are displayed
+    const firstEmp = testEmployerExperiences.at(0);
+    const secondEmp = testEmployerExperiences.at(1);
+
+    await expect(page.locator('[data-testid="employer-experiences-list"]').locator(`text=${firstEmp?.name}`).first()).toBeVisible();
+    await expect(page.locator('[data-testid="employer-experiences-list"]').locator(`text=${secondEmp?.name}`).first()).toBeVisible();
   });
 
   test('should successfully create a new employer experience with valid data', async ({ page }) => {
-    const { getCreate, getDelete } = getUtility(page, 'Create Test');
+    await page.click('[data-testid="add-employer-experience-button"]');
 
-    const create = getCreate();
-    const deleteEmployerExperience = getDelete();
+    // Fill in the form
+    await page.fill('[data-testid="employer-name-input"]', 'Test Employer');
 
-    await create();
-    await deleteEmployerExperience();
+    // Submit the form
+    await page.click('[data-testid="save-employer-experience-button"]');
+
+    // Wait for the success message
+    await expect(page.locator('text=Employer experience created successfully')).toBeVisible();
   });
 
   test('should show validation errors for invalid employer experience data', async ({ page }) => {
@@ -75,14 +47,9 @@ test.describe('Admin Employer Experience CRUD Operations', () => {
   });
 
   test('should successfully update an existing employer experience', async ({ page }) => {
-    const { getCreate, getDelete, ID } = getUtility(page, 'Update Test');
-    const create = getCreate();
-    const deleteEmployerExperience = getDelete();
-
-    await create();
-
-    // Click edit button for the created employer experience
-    await page.click(`[data-testid="edit-employer-experience-${ID}"]`);
+    const chosenEmployer = testEmployerExperiences.at(1)!;
+    // Click edit button for the chosen employer experience
+    await page.click(`[data-testid="edit-employer-experience-${chosenEmployer.id}"]`);
 
     // Update the name
     await page.fill('[data-testid="employer-name-input"]', 'Test Employer Experience #2');
@@ -92,20 +59,14 @@ test.describe('Admin Employer Experience CRUD Operations', () => {
 
     // Wait for success message
     await expect(page.locator('text=Employer experience updated successfully')).toBeVisible();
-
-    // Verify changes are reflected
-    await expect(page.locator('text=Test Employer Experience #2')).toBeVisible();
-
-    await deleteEmployerExperience();
   });
 
   test('should successfully delete an employer experience with no relationships', async ({ page }) => {
-    const { getCreate, getDelete } = getUtility(page, 'Delete Test');
+    const chosenEmployer = testEmployerExperiences.at(1)!;
+    await page.click(`[data-testid="delete-employer-experience-${chosenEmployer.id}"]`);
 
-    const create = getCreate();
-    const deleteEmployerExperience = getDelete();
+    await page.fill('[data-testid="employer-experience-delete-input"]', chosenEmployer.name);
 
-    await create();
-    await deleteEmployerExperience();
+    await page.click('[data-testid="employer-experience-delete-button"]');
   });
 });

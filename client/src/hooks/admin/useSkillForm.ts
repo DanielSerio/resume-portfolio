@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
 import { useZodForm } from "../core/useZodForm";
 import {
   SkillInsertSchema,
@@ -15,12 +16,11 @@ const DeleteSkillSchema = z.object({
   confirmName: z.string(),
 });
 
-export interface SkillFormParams {
+export interface UseSkillFormProps {
   onSuccess: () => void;
-  onError: (error: Error) => void;
 }
 
-export function useCreateSkillForm({ onSuccess, onError }: SkillFormParams) {
+export function useCreateSkillForm({ onSuccess }: UseSkillFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/skills" });
 
   return useZodForm({
@@ -51,10 +51,10 @@ export function useCreateSkillForm({ onSuccess, onError }: SkillFormParams) {
       // Handle join table relationships if employer experiences are provided
       if (employer_experience && employer_experience.length > 0) {
         const joinTableData = employer_experience
-          .filter(exp => exp.employer_experience_id) // Only include non-empty selections
+          .filter(exp => exp.id) // Only include non-empty selections
           .map(exp => ({
             skill_id: insertedSkill.id,
-            employer_experience_id: exp.employer_experience_id,
+            employer_experience_id: exp.id,
           }));
 
         if (joinTableData.length > 0) {
@@ -68,18 +68,22 @@ export function useCreateSkillForm({ onSuccess, onError }: SkillFormParams) {
 
       return insertedSkill;
     },
-    onSuccess,
-    onError,
+    onSuccess: async () => {
+      await toast.success("Skill created successfully");
+      onSuccess();
+    },
+    onError: async (error) => {
+      await toast.error("Failed to create skill:", error);
+    },
   });
 }
 
-export function useUpdateSkillForm(skill: Skill, { onSuccess, onError }: SkillFormParams) {
+export function useUpdateSkillForm(skill: Skill, { onSuccess }: UseSkillFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/skills" });
 
   // Transform the skill data to match form structure
   const defaultValues = {
     ...skill,
-    employer_experience: skill.employer_experience || [],
   };
 
   return useZodForm({
@@ -112,10 +116,10 @@ export function useUpdateSkillForm(skill: Skill, { onSuccess, onError }: SkillFo
       // Insert new join table relationships if provided
       if (employer_experience && employer_experience.length > 0) {
         const joinTableData = employer_experience
-          .filter(exp => exp.employer_experience_id) // Only include non-empty selections
+          .filter(exp => exp.id) // Only include non-empty selections
           .map(exp => ({
             skill_id: skill.id,
-            employer_experience_id: exp.employer_experience_id,
+            employer_experience_id: exp.id,
           }));
 
         if (joinTableData.length > 0) {
@@ -129,12 +133,17 @@ export function useUpdateSkillForm(skill: Skill, { onSuccess, onError }: SkillFo
 
       return updatedSkill;
     },
-    onSuccess,
-    onError,
+    onSuccess: async () => {
+      await toast.success("Skill updated successfully");
+      onSuccess();
+    },
+    onError: (error) => {
+      toast.error("Failed to update skill:", error);
+    },
   });
 }
 
-export function useDeleteSkillForm(skill: Skill, { onSuccess, onError }: SkillFormParams) {
+export function useDeleteSkillForm(skill: Skill, { onSuccess }: UseSkillFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/skills" });
   const [isConfirmed, setIsConfirmed] = useState(false);
 
@@ -150,26 +159,24 @@ export function useDeleteSkillForm(skill: Skill, { onSuccess, onError }: SkillFo
     schema: deleteSchema,
     queryKey: ["skills"],
     mutationFn: async () => {
-      // Delete join table relationships first
-      const { error: joinError } = await supabase
-        .from("skill_employer_experience")
-        .delete()
-        .eq("skill_id", skill.id);
-
-      if (joinError) throw joinError;
-
       // Delete the skill
-      const { error: skillError } = await supabase
+      const { error } = await supabase
         .from("skill")
         .delete()
         .eq("id", skill.id);
 
-      if (skillError) throw skillError;
+      if (error) throw error;
 
       return { id: skill.id };
     },
-    onSuccess,
-    onError,
+    onSuccess: async () => {
+      await toast.success("Skill deleted successfully");
+      setIsConfirmed(false);
+      onSuccess();
+    },
+    onError: (error) => {
+      toast.error("Failed to delete skill:", error);
+    },
   });
 
   return {

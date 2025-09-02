@@ -14,19 +14,16 @@ import type { Skill } from "@/lib/schemas";
 interface DeleteSkillFormProps {
   skill: Skill;
   onSuccess: () => void;
-  onError: (error: Error) => void;
   onCancel?: () => void;
 }
 
 export function DeleteSkillForm({
   skill,
   onSuccess,
-  onError,
   onCancel,
 }: DeleteSkillFormProps) {
   const { form, handleSubmit, isLoading, error } = useDeleteSkillForm(skill, {
     onSuccess,
-    onError,
   });
 
   return (
@@ -52,6 +49,7 @@ export function DeleteSkillForm({
               </FormLabel>
               <FormControl>
                 <Input
+                  data-testid="skill-delete-input"
                   placeholder={`Type "${skill.name || skill.id}" here`}
                   {...field}
                   disabled={isLoading}
@@ -70,6 +68,7 @@ export function DeleteSkillForm({
 
         <div className="flex gap-3">
           <Button
+            data-testid="skill-delete-button"
             type="submit"
             className="flex-1"
             disabled={isLoading}

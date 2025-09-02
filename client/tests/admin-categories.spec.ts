@@ -1,5 +1,5 @@
-import { Page } from 'playwright/test';
 import { authenticatedTest as test, expect } from './setup/test-setup';
+import { testCategories } from './fixtures';
 
 test.describe('Admin Categories CRUD Operations', () => {
   test.beforeEach(async ({ page }) => {
@@ -10,57 +10,30 @@ test.describe('Admin Categories CRUD Operations', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  const getUtility = (page: Page, name: string) => {
-    const ID = encodeURIComponent(name);
-
-    const getCreate = () => {
-      return async () => {
-        await page.click('[data-testid="add-category-button"]');
-
-        // Fill in the form
-        await page.fill('[data-testid="category-name-input"]', name);
-
-        // Submit the form
-        await page.click('[data-testid="save-category-button"]');
-
-        // Wait for the success message
-        await expect(page.locator('text=Category created successfully')).toBeVisible();
-      };
-    };
-
-    const getDelete = () => {
-      return async () => {
-        await page.click(`[data-testid="delete-category-${ID}"]`);
-
-        await page.fill('[data-testid="category-delete-input"]', name);
-
-        await page.click('[data-testid="category-delete-button"]');
-      };
-    };
-
-    return {
-      ID,
-      getCreate,
-      getDelete
-    };
-  };
-
   test('should display existing categories in the list', async ({ page }) => {
     // Check that the categories list is visible
     await expect(page.locator('[data-testid="categories-list"]')).toBeVisible();
 
-    // Verify that test categories are displayed
-    await expect(page.locator('text="Front-end"')).toBeVisible();
+    // Verify that test categories from fixtures are displayed
+
+    const firstCat = testCategories.at(0);
+    const secondCat = testCategories.at(1);
+
+    await expect(page.locator('[data-testid="categories-list"]').locator(`text=${firstCat?.name}`).first()).toBeVisible();
+    await expect(page.locator('[data-testid="categories-list"]').locator(`text=${secondCat?.name}`).first()).toBeVisible();
   });
 
   test('should successfully create a new category with valid data', async ({ page }) => {
-    const { getCreate, getDelete } = getUtility(page, 'Create Test');
+    await page.click('[data-testid="add-category-button"]');
 
-    const create = getCreate();
-    const deleteCategory = getDelete();
+    // Fill in the form
+    await page.fill('[data-testid="category-name-input"]', 'Test Category');
 
-    await create();
-    await deleteCategory();
+    // Submit the form
+    await page.click('[data-testid="save-category-button"]');
+
+    // Wait for the success message
+    await expect(page.locator('text=Category created successfully')).toBeVisible();
   });
 
   test('should show validation errors for invalid category data', async ({ page }) => {
@@ -75,14 +48,9 @@ test.describe('Admin Categories CRUD Operations', () => {
   });
 
   test('should successfully update an existing category', async ({ page }) => {
-    const { getCreate, getDelete, ID } = getUtility(page, 'Update Test');
-    const create = getCreate();
-    const deleteCategory = getDelete();
-
-    await create();
-
+    const chosenCategory = testCategories.at(1)!;
     // Click edit button for the created category
-    await page.click(`[data-testid="edit-category-${ID}"]`);
+    await page.click(`[data-testid="edit-category-${chosenCategory.id}"]`);
 
     // Update the name
     await page.fill('[data-testid="category-name-input"]', 'Test Category #2');
@@ -92,17 +60,14 @@ test.describe('Admin Categories CRUD Operations', () => {
 
     // Wait for success message
     await expect(page.locator('text=Category updated successfully')).toBeVisible();
-
-    await deleteCategory();
   });
 
   test('should successfully delete a category with no relationships', async ({ page }) => {
-    const { getCreate, getDelete } = getUtility(page, 'Delete Test');
+    const chosenCategory = testCategories.at(1)!;
+    await page.click(`[data-testid="delete-category-${chosenCategory.id}"]`);
 
-    const create = getCreate();
-    const deleteCategory = getDelete();
+    await page.fill('[data-testid="category-delete-input"]', chosenCategory.name);
 
-    await create();
-    await deleteCategory();
+    await page.click('[data-testid="category-delete-button"]');
   });
 });

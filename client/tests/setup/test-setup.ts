@@ -34,12 +34,16 @@ function resetTestData() {
   skillEmployerExperiences = [...testSkillEmployerExperiences];
 }
 
-// Extend the base test to include comprehensive API mocking
-export const test = base.extend({
+// Basic test fixture for non-admin tests that don't need authentication
+export const test = base;
+
+// Create an authenticated test that automatically logs in
+export const authenticatedTest = base.extend({
   page: async ({ page }, use) => {
+    // IMPORTANT: Setup route handlers BEFORE any navigation/login
     // Reset test data before each test
     resetTestData();
-    
+
     // Setup request interception to mock Supabase auth API calls
     await page.route('http://127.0.0.1:54321/auth/v1/token*', async (route) => {
       if (route.request().method() === 'POST') {
@@ -63,7 +67,7 @@ export const test = base.extend({
       }
       await route.continue();
     });
-    
+
     await page.route('http://127.0.0.1:54321/auth/v1/user*', async (route) => {
       if (route.request().method() === 'GET') {
         console.log(`👤 Mocking user: ${route.request().method()} ${route.request().url()}`);
@@ -80,7 +84,7 @@ export const test = base.extend({
       }
       await route.continue();
     });
-    
+
     await page.route('http://127.0.0.1:54321/auth/v1/logout*', async (route) => {
       if (route.request().method() === 'POST') {
         return route.fulfill({
@@ -91,15 +95,15 @@ export const test = base.extend({
       }
       await route.continue();
     });
-    
+
     // Setup comprehensive REST API mocking for all endpoints
-    
+
     // Categories endpoint
     await page.route('http://127.0.0.1:54321/rest/v1/skill_category*', async (route) => {
       const method = route.request().method();
       const url = new URL(route.request().url());
       console.log(`📂 Mocking category: ${method} ${route.request().url()}`);
-      
+
       if (method === 'GET') {
         return route.fulfill({
           status: 200,
@@ -153,7 +157,7 @@ export const test = base.extend({
           body: ''
         });
       }
-      
+
       await route.continue();
     });
 
@@ -161,8 +165,8 @@ export const test = base.extend({
     await page.route('http://127.0.0.1:54321/rest/v1/skill_subcategory*', async (route) => {
       const method = route.request().method();
       const url = new URL(route.request().url());
-      console.log(`📁 Mocking subcategory: ${method} ${route.request().url()}`);
-      
+      console.log(`📂 Mocking subcategory: ${method} ${route.request().url()}`);
+
       if (method === 'GET') {
         return route.fulfill({
           status: 200,
@@ -174,8 +178,7 @@ export const test = base.extend({
         const id = generateId(body.name || '');
         const newSubcategory: TestSubcategory = {
           id,
-          name: body.name || '',
-          category_id: body.category_id || '',
+          name: body.name || ''
         };
         subcategories.push(newSubcategory);
         return route.fulfill({
@@ -217,7 +220,7 @@ export const test = base.extend({
           body: ''
         });
       }
-      
+
       await route.continue();
     });
 
@@ -226,7 +229,7 @@ export const test = base.extend({
       const method = route.request().method();
       const url = new URL(route.request().url());
       console.log(`🏢 Mocking employer_experience: ${method} ${route.request().url()}`);
-      
+
       if (method === 'GET') {
         return route.fulfill({
           status: 200,
@@ -280,29 +283,30 @@ export const test = base.extend({
           body: ''
         });
       }
-      
+
       await route.continue();
     });
 
     // Skills endpoint (with complex relationship handling)
-    await page.route('http://127.0.0.1:54321/rest/v1/skill*', async (route) => {
+    await page.route('**/rest/v1/skill?*', async (route) => {
       const method = route.request().method();
       const url = new URL(route.request().url());
       const select = url.searchParams.get('select');
       console.log(`⚡ Mocking skill: ${method} ${route.request().url()}`);
-      
+
       if (method === 'GET') {
         // Handle complex relationship queries
         if (select?.includes('category:category_id')) {
           // This is the grouped skills query with relationships
           const skillsWithRelationships = getAllSkillsWithRelationships();
+          console.log('🔍 Skills with relationships:', JSON.stringify(skillsWithRelationships, null, 2));
           return route.fulfill({
             status: 200,
             contentType: 'application/json',
             body: JSON.stringify(skillsWithRelationships)
           });
         }
-        
+
         return route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -336,11 +340,7 @@ export const test = base.extend({
             body: JSON.stringify({ message: 'Skill not found' })
           });
         }
-        skills[skillIndex] = {
-          ...skills[skillIndex],
-          ...body,
-          last_updated_at: new Date().toISOString(),
-        };
+        skills[skillIndex] = { ...skills[skillIndex], ...body };
         return route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -363,27 +363,62 @@ export const test = base.extend({
           body: ''
         });
       }
+
+      await route.continue();
+    });
+
+    // Skill-Employer Experience junction table endpoint
+    await page.route('http://127.0.0.1:54321/rest/v1/skill_employer_experience*', async (route) => {
+      const method = route.request().method();
+      const url = new URL(route.request().url());
+      console.log(`🔗 Mocking skill_employer_experience: ${method} ${route.request().url()}`);
+      
+      if (method === 'DELETE') {
+        const skillId = url.searchParams.get('skill_id');
+        if (skillId) {
+          const decodedSkillId = skillId.replace('eq.', '');
+          // Remove relationships for this skill
+          const initialCount = skillEmployerExperiences.length;
+          skillEmployerExperiences = skillEmployerExperiences.filter(se => se.skill_id !== decodedSkillId);
+          const removedCount = initialCount - skillEmployerExperiences.length;
+          console.log(`🔗 Removed ${removedCount} skill-employer relationships for skill: ${decodedSkillId}`);
+        }
+        return route.fulfill({
+          status: 204,
+          contentType: 'application/json',
+          body: ''
+        });
+      } else if (method === 'POST') {
+        const body = await route.request().postDataJSON();
+        // Handle array of relationships or single relationship
+        const relationships = Array.isArray(body) ? body : [body];
+        relationships.forEach(rel => {
+          skillEmployerExperiences.push({
+            skill_id: rel.skill_id,
+            employer_experience_id: rel.employer_experience_id,
+          });
+        });
+        console.log(`🔗 Added ${relationships.length} skill-employer relationships`);
+        return route.fulfill({
+          status: 201,
+          contentType: 'application/json',
+          body: JSON.stringify(relationships)
+        });
+      }
       
       await route.continue();
     });
-    
+
+    // NOW login after route handlers are set up
+    await loginAsAdmin(page);
+
+    await use(page);
+
     // Catch-all logging for any unhandled requests
     await page.route('http://127.0.0.1:54321/**', async (route) => {
       console.log(`⚠️  Unhandled request: ${route.request().method()} ${route.request().url()}`);
       await route.continue();
     });
-    
-    await use(page);
-  },
-});
-
-// Create an authenticated test that automatically logs in
-export const authenticatedTest = test.extend({
-  page: async ({ page }, use) => {
-    // Login before each test
-    await loginAsAdmin(page);
-    
-    await use(page);
   },
 });
 

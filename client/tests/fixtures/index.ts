@@ -6,7 +6,6 @@ export interface TestCategory {
 export interface TestSubcategory {
   id: string;
   name: string;
-  category_id: string;
 }
 
 export interface TestEmployerExperience {
@@ -19,7 +18,7 @@ export interface TestSkill {
   name: string;
   comfort_level: number;
   category_id: string;
-  subcategory_id?: string;
+  subcategory_id?: string | null;
   last_updated_at: string;
 }
 
@@ -30,33 +29,33 @@ export interface TestSkillEmployerExperience {
 
 // Test Categories
 export const testCategories: TestCategory[] = [
-  { id: 'programming-languages', name: 'Programming Languages' },
-  { id: 'frameworks', name: 'Frameworks' },
-  { id: 'tools', name: 'Tools' },
-  { id: 'databases', name: 'Databases' },
+  { id: encodeURIComponent('Programming Languages'), name: 'Programming Languages' },
+  { id: encodeURIComponent('Frameworks'), name: 'Frameworks' },
+  { id: encodeURIComponent('Tools'), name: 'Tools' },
+  { id: encodeURIComponent('Databases'), name: 'Databases' },
 ];
 
 // Test Subcategories
 export const testSubcategories: TestSubcategory[] = [
-  { id: 'frontend', name: 'Frontend', category_id: 'frameworks' },
-  { id: 'backend', name: 'Backend', category_id: 'frameworks' },
-  { id: 'mobile', name: 'Mobile', category_id: 'frameworks' },
-  { id: 'devops', name: 'DevOps', category_id: 'tools' },
-  { id: 'testing', name: 'Testing', category_id: 'tools' },
+  { id: encodeURIComponent('Frontend'), name: 'Frontend', },
+  { id: encodeURIComponent('Backend'), name: 'Backend', },
+  { id: encodeURIComponent('Mobile'), name: 'Mobile', },
+  { id: encodeURIComponent('DevOps'), name: 'DevOps', },
+  { id: encodeURIComponent('Testing'), name: 'Testing', },
 ];
 
 // Test Employer Experiences
 export const testEmployerExperiences: TestEmployerExperience[] = [
   {
-    id: 'company-a',
+    id: encodeURIComponent('Company A'),
     name: 'Company A',
   },
   {
-    id: 'company-b',
+    id: encodeURIComponent('Company B'),
     name: 'Company B',
   },
   {
-    id: 'freelance',
+    id: encodeURIComponent('Freelance'),
     name: 'Freelance',
   },
 ];
@@ -64,34 +63,34 @@ export const testEmployerExperiences: TestEmployerExperience[] = [
 // Test Skills
 export const testSkills: TestSkill[] = [
   {
-    id: 'javascript',
+    id: encodeURIComponent('JavaScript'),
     name: 'JavaScript',
     comfort_level: 9,
-    category_id: 'programming-languages',
+    category_id: encodeURIComponent('Programming Languages'),
     subcategory_id: null,
     last_updated_at: '2024-01-15T10:00:00Z',
   },
   {
-    id: 'react',
+    id: encodeURIComponent('React'),
     name: 'React',
     comfort_level: 8,
-    category_id: 'frameworks',
-    subcategory_id: 'frontend',
+    category_id: encodeURIComponent('Frameworks'),
+    subcategory_id: encodeURIComponent('Frontend'),
     last_updated_at: '2024-02-01T14:30:00Z',
   },
   {
-    id: 'nodejs',
+    id: encodeURIComponent('Node.js'),
     name: 'Node.js',
     comfort_level: 7,
-    category_id: 'frameworks',
-    subcategory_id: 'backend',
+    category_id: encodeURIComponent('Frameworks'),
+    subcategory_id: encodeURIComponent('Backend'),
     last_updated_at: '2024-01-20T09:15:00Z',
   },
   {
-    id: 'postgresql',
+    id: encodeURIComponent('PostgreSQL'),
     name: 'PostgreSQL',
     comfort_level: 6,
-    category_id: 'databases',
+    category_id: encodeURIComponent('Databases'),
     subcategory_id: null,
     last_updated_at: '2024-01-10T16:45:00Z',
   },
@@ -99,12 +98,12 @@ export const testSkills: TestSkill[] = [
 
 // Test Skill-Employer Experience relationships
 export const testSkillEmployerExperiences: TestSkillEmployerExperience[] = [
-  { skill_id: 'javascript', employer_experience_id: 'company-a' },
-  { skill_id: 'javascript', employer_experience_id: 'company-b' },
-  { skill_id: 'react', employer_experience_id: 'company-a' },
-  { skill_id: 'react', employer_experience_id: 'freelance' },
-  { skill_id: 'nodejs', employer_experience_id: 'company-b' },
-  { skill_id: 'postgresql', employer_experience_id: 'company-a' },
+  { skill_id: encodeURIComponent('JavaScript'), employer_experience_id: encodeURIComponent('Company A') },
+  { skill_id: encodeURIComponent('JavaScript'), employer_experience_id: encodeURIComponent('Company B') },
+  { skill_id: encodeURIComponent('React'), employer_experience_id: encodeURIComponent('Company A') },
+  { skill_id: encodeURIComponent('React'), employer_experience_id: encodeURIComponent('Freelance') },
+  { skill_id: encodeURIComponent('Node.js'), employer_experience_id: encodeURIComponent('Company B') },
+  { skill_id: encodeURIComponent('PostgreSQL'), employer_experience_id: encodeURIComponent('Company A') },
 ];
 
 // Helper to get full skill data with relationships
@@ -113,21 +112,21 @@ export function getSkillWithRelationships(skillId: string) {
   if (!skill) return null;
 
   const category = testCategories.find(c => c.id === skill.category_id);
-  const subcategory = skill.subcategory_id 
+  const subcategory = skill.subcategory_id
     ? testSubcategories.find(sc => sc.id === skill.subcategory_id)
     : null;
-  
+
   const skillEmployerExperiences = testSkillEmployerExperiences
     .filter(se => se.skill_id === skillId)
     .map(se => ({
       id: se.skill_id,
       employer_experience_id: se.employer_experience_id,
     }));
-  
+
   const employerExperiences = skillEmployerExperiences.map(se => {
     const emp = testEmployerExperiences.find(e => e.id === se.employer_experience_id);
     return {
-      employer_experience_id: se.employer_experience_id,
+      id: se.employer_experience_id, // Use 'id' to match database schema
       name: emp?.name || 'Unknown',
     };
   });

@@ -1,5 +1,5 @@
-import { Page } from 'playwright/test';
 import { authenticatedTest as test, expect } from './setup/test-setup';
+import { testSubcategories } from './fixtures';
 
 test.describe('Admin Subcategories CRUD Operations', () => {
   test.beforeEach(async ({ page }) => {
@@ -10,56 +10,29 @@ test.describe('Admin Subcategories CRUD Operations', () => {
     await page.waitForLoadState('networkidle');
   });
 
-
-
-  const getUtility = (page: Page, name: string) => {
-    const ID = encodeURIComponent(name);
-
-    const getCreate = () => {
-      return async () => {
-        await page.click('[data-testid="add-subcategory-button"]');
-
-        // Fill in the form
-        await page.fill('[data-testid="subcategory-name-input"]', name);
-
-        // Submit the form
-        await page.click('[data-testid="save-subcategory-button"]');
-
-        // Wait for the success message
-        await expect(page.locator('text=Subcategory created successfully')).toBeVisible();
-      };
-    };
-
-    const getDelete = () => {
-      return async () => {
-        await page.click(`[data-testid="delete-subcategory-${ID}"]`);
-
-        await page.fill('[data-testid="subcategory-delete-input"]', name);
-
-        await page.click('[data-testid="subcategory-delete-button"]');
-      };
-    };
-
-    return {
-      ID,
-      getCreate,
-      getDelete
-    };
-  };
-
   test('should display existing subcategories in the list', async ({ page }) => {
     // Check that the subcategories list is visible
     await expect(page.locator('[data-testid="subcategories-list"]')).toBeVisible();
+
+    // Verify that test subcategories from fixtures are displayed
+    const firstSub = testSubcategories.at(0);
+    const secondSub = testSubcategories.at(1);
+
+    await expect(page.locator('[data-testid="subcategories-list"]').locator(`text=${firstSub?.name}`).first()).toBeVisible();
+    await expect(page.locator('[data-testid="subcategories-list"]').locator(`text=${secondSub?.name}`).first()).toBeVisible();
   });
 
   test('should successfully create a new subcategory with valid data', async ({ page }) => {
-    const { getCreate, getDelete } = getUtility(page, 'Create Test');
+    await page.click('[data-testid="add-subcategory-button"]');
 
-    const create = getCreate();
-    const deleteSubcategory = getDelete();
+    // Fill in the form
+    await page.fill('[data-testid="subcategory-name-input"]', 'Test Subcategory');
 
-    await create();
-    await deleteSubcategory();
+    // Submit the form
+    await page.click('[data-testid="save-subcategory-button"]');
+
+    // Wait for the success message
+    await expect(page.locator('text=Subcategory created successfully')).toBeVisible();
   });
 
   test('should show validation errors for invalid subcategory data', async ({ page }) => {
@@ -74,14 +47,9 @@ test.describe('Admin Subcategories CRUD Operations', () => {
   });
 
   test('should successfully update an existing subcategory', async ({ page }) => {
-    const { getCreate, getDelete, ID } = getUtility(page, 'Update Test');
-    const create = getCreate();
-    const deleteSubcategory = getDelete();
-
-    await create();
-
-    // Click edit button for Full Stack subcategory
-    await page.click(`[data-testid="edit-subcategory-${ID}"]`);
+    const chosenSubcategory = testSubcategories.at(1)!;
+    // Click edit button for the chosen subcategory
+    await page.click(`[data-testid="edit-subcategory-${chosenSubcategory.id}"]`);
 
     // Update the name
     await page.fill('[data-testid="subcategory-name-input"]', 'Test Subcategory #2');
@@ -91,17 +59,14 @@ test.describe('Admin Subcategories CRUD Operations', () => {
 
     // Wait for success message
     await expect(page.locator('text=Subcategory updated successfully')).toBeVisible();
-
-    await deleteSubcategory();
   });
 
   test('should successfully delete a subcategory with no relationships', async ({ page }) => {
-    const { getCreate, getDelete } = getUtility(page, 'Delete Test');
+    const chosenSubcategory = testSubcategories.at(1)!;
+    await page.click(`[data-testid="delete-subcategory-${chosenSubcategory.id}"]`);
 
-    const create = getCreate();
-    const deleteSubcategory = getDelete();
+    await page.fill('[data-testid="subcategory-delete-input"]', chosenSubcategory.name);
 
-    await create();
-    await deleteSubcategory();
+    await page.click('[data-testid="subcategory-delete-button"]');
   });
 });
