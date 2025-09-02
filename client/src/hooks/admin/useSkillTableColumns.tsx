@@ -19,7 +19,10 @@ export function useSkillTableColumns({
 }: UseSkillTableColumnsParams) {
   function UpdateCell({ cell, row }: CellContext<Skill, unknown>): JSX.Element {
     return (
-      <TablePseudoLink onClick={() => onUpdateClick(row)}>
+      <TablePseudoLink
+        onClick={() => onUpdateClick(row)}
+        data-testid={`edit-skill-${row.original.id}`}
+      >
         {cell.getValue() as string}
       </TablePseudoLink>
     );
@@ -74,6 +77,7 @@ export function useSkillTableColumns({
         cell({ row }) {
           return (
             <Button
+              data-testid={`delete-skill-${row.original.id}`}
               className="w-[24px] h-[24px] text-destructive"
               variant="ghost"
               size="icon"

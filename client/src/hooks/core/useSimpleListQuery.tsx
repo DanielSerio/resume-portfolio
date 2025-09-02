@@ -47,6 +47,6 @@ export function useSimpleListQuery<
   return useQuery({
     queryKey,
     queryFn,
-    staleTime: Infinity,
+    staleTime: 60 * 60 * 1000,
   });
 }

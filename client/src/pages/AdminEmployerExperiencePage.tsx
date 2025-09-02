@@ -48,22 +48,32 @@ export function AdminEmployerExperiencePage() {
   return (
     <Page>
       <Table
+        testId="employer-experiences-list"
         isLoading={query.isLoading}
         table={table}
         gridTemplateColumns={gridTemplateColumns}
       />
       <div className="p-4">
-        <Button onClick={() => launch("create")}>
+        <Button
+          data-testid="add-employer-experience-button"
+          onClick={() => launch("create")}
+        >
           Create a New Employer Experience
         </Button>
       </div>
       <Sheet
-        open={selectedEmployerExperience !== null || createLaunchedAt !== null || deleteLaunchedAt !== null}
+        open={
+          selectedEmployerExperience !== null ||
+          createLaunchedAt !== null ||
+          deleteLaunchedAt !== null
+        }
         onOpenChange={dismissSheet}
       >
         <SheetContent>
           <SheetHeader>
-            <SheetTitle className="capitalize">{mode} employer experience</SheetTitle>
+            <SheetTitle className="capitalize">
+              {mode} employer experience
+            </SheetTitle>
             <SheetDescription>
               {mode === "create" ? `Create a new` : mode} employer experience
             </SheetDescription>
@@ -72,6 +82,7 @@ export function AdminEmployerExperiencePage() {
             <EmployerExperienceForm
               employerExperience={selectedEmployerExperience ?? undefined}
               mode={mode}
+              onSuccess={() => dismissSheet()}
             />
           </div>
         </SheetContent>

@@ -15,30 +15,53 @@ import {
 } from "@/hooks/admin";
 import type { SkillCategory } from "@/lib/schemas";
 
-export interface CategoryFormProps {
-  mode: "create" | "update" | "delete";
-  category?: SkillCategory;
+interface Methods {
+  onSuccess: () => void;
   onCancel?: () => void;
 }
 
-export function CategoryForm({ mode, category, onCancel }: CategoryFormProps) {
+export interface CategoryFormProps extends Methods {
+  mode: "create" | "update" | "delete";
+  category?: SkillCategory;
+}
+
+export function CategoryForm({
+  mode,
+  category,
+  onSuccess,
+  onCancel,
+}: CategoryFormProps) {
   if (mode === "create") {
-    return <CreateCategoryForm onCancel={onCancel} />;
+    return <CreateCategoryForm onCancel={onCancel} onSuccess={onSuccess} />;
   }
 
   if (mode === "update" && category) {
-    return <UpdateCategoryForm category={category} onCancel={onCancel} />;
+    return (
+      <UpdateCategoryForm
+        category={category}
+        onCancel={onCancel}
+        onSuccess={onSuccess}
+      />
+    );
   }
 
   if (mode === "delete" && category) {
-    return <DeleteCategoryForm category={category} onCancel={onCancel} />;
+    return (
+      <DeleteCategoryForm
+        category={category}
+        onCancel={onCancel}
+        onSuccess={onSuccess}
+      />
+    );
   }
 
   return null;
 }
 
-function CreateCategoryForm({ onCancel }: { onCancel?: () => void }) {
-  const { form, handleSubmit, isLoading, error } = useCreateSkillCategoryForm();
+function CreateCategoryForm({ onCancel, onSuccess }: Methods) {
+  const { form, handleSubmit, isLoading, error } = useCreateSkillCategoryForm({
+    onSuccess,
+  });
 
   return (
     <Form {...form}>
@@ -51,6 +74,7 @@ function CreateCategoryForm({ onCancel }: { onCancel?: () => void }) {
               <FormLabel>Category Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="category-name-input"
                   placeholder="Enter category name"
                   {...field}
                   disabled={isLoading}
@@ -68,11 +92,21 @@ function CreateCategoryForm({ onCancel }: { onCancel?: () => void }) {
         )}
 
         <div className="flex gap-3">
-          <Button className="flex-1" type="submit" disabled={isLoading}>
+          <Button
+            data-testid="save-category-button"
+            className="flex-1"
+            type="submit"
+            disabled={isLoading}
+          >
             {isLoading ? "Creating..." : "Create Category"}
           </Button>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button
+              data-testid="cancel-edit-button"
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+            >
               Cancel
             </Button>
           )}
@@ -82,15 +116,15 @@ function CreateCategoryForm({ onCancel }: { onCancel?: () => void }) {
   );
 }
 
-function UpdateCategoryForm({
-  category,
-  onCancel,
-}: {
+interface EntityMethods extends Methods {
   category: SkillCategory;
-  onCancel?: () => void;
-}) {
-  const { form, handleSubmit, isLoading, error } =
-    useUpdateSkillCategoryForm(category);
+}
+
+function UpdateCategoryForm({ category, onSuccess, onCancel }: EntityMethods) {
+  const { form, handleSubmit, isLoading, error } = useUpdateSkillCategoryForm(
+    category,
+    { onSuccess }
+  );
 
   return (
     <Form {...form}>
@@ -103,6 +137,7 @@ function UpdateCategoryForm({
               <FormLabel>Category Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="category-name-input"
                   placeholder="Enter category name"
                   {...field}
                   disabled={isLoading}
@@ -120,11 +155,21 @@ function UpdateCategoryForm({
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" className="flex-1" disabled={isLoading}>
+          <Button
+            data-testid="save-category-button"
+            type="submit"
+            className="flex-1"
+            disabled={isLoading}
+          >
             {isLoading ? "Updating..." : "Update Category"}
           </Button>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button
+              data-testid="cancel-edit-button"
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+            >
               Cancel
             </Button>
           )}
@@ -134,15 +179,11 @@ function UpdateCategoryForm({
   );
 }
 
-function DeleteCategoryForm({
-  category,
-  onCancel,
-}: {
-  category: SkillCategory;
-  onCancel?: () => void;
-}) {
-  const { form, handleSubmit, isLoading, error } =
-    useDeleteSkillCategoryForm(category);
+function DeleteCategoryForm({ category, onSuccess, onCancel }: EntityMethods) {
+  const { form, handleSubmit, isLoading, error } = useDeleteSkillCategoryForm(
+    category,
+    { onSuccess }
+  );
 
   return (
     <Form {...form}>
@@ -165,6 +206,7 @@ function DeleteCategoryForm({
               <FormLabel>Type "{category.name}" to confirm deletion</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="category-delete-input"
                   placeholder={`Type "${category.name}" here`}
                   {...field}
                   disabled={isLoading}
@@ -183,6 +225,7 @@ function DeleteCategoryForm({
 
         <div className="flex gap-3">
           <Button
+            data-testid="category-delete-button"
             type="submit"
             className="flex-1"
             disabled={isLoading}
@@ -191,7 +234,12 @@ function DeleteCategoryForm({
             {isLoading ? "Deleting..." : "Delete Category"}
           </Button>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button
+              data-testid="cancel-edit-button"
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+            >
               Cancel
             </Button>
           )}

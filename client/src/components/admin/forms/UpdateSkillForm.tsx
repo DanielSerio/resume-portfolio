@@ -23,28 +23,24 @@ import {
   useEmployerExperiencesList,
 } from "@/hooks/resume";
 import type { Skill } from "@/lib/schemas";
-import type { Client } from "@/main";
+import { useRouteContext } from "@tanstack/react-router";
 import { useFieldArray } from "react-hook-form";
 import { Trash2, Plus } from "lucide-react";
 
 interface UpdateSkillFormProps {
-  supabase: Client;
   skill: Skill;
   onSuccess: () => void;
-  onError: (error: Error) => void;
   onCancel?: () => void;
 }
 
 export function UpdateSkillForm({
-  supabase,
   skill,
   onSuccess,
-  onError,
   onCancel,
 }: UpdateSkillFormProps) {
+  const { supabase } = useRouteContext({ from: "/admin/skills" });
   const { form, handleSubmit, isLoading, error } = useUpdateSkillForm(skill, {
     onSuccess,
-    onError,
   });
   const categoriesQuery = useCategoriesList(supabase);
   const subcategoriesQuery = useSubcategoriesList(supabase);
@@ -73,6 +69,7 @@ export function UpdateSkillForm({
               <FormLabel>Skill Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="skill-name-input"
                   placeholder="Enter skill name"
                   {...field}
                   value={field.value || ""}
@@ -96,7 +93,7 @@ export function UpdateSkillForm({
                 disabled={isLoading}
               >
                 <FormControl>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger data-testid="skill-category-select" className="w-full">
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                 </FormControl>
@@ -127,7 +124,7 @@ export function UpdateSkillForm({
                 disabled={isLoading}
               >
                 <FormControl>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger data-testid="skill-subcategory-select" className="w-full">
                     <SelectValue placeholder="Select a subcategory" />
                   </SelectTrigger>
                 </FormControl>
@@ -153,6 +150,7 @@ export function UpdateSkillForm({
               <FormLabel>Comfort Level: {field.value || 1}/100</FormLabel>
               <FormControl>
                 <Slider
+                  data-testid="skill-comfort-level-input"
                   min={1}
                   max={100}
                   step={1}
@@ -241,7 +239,7 @@ export function UpdateSkillForm({
           </div>
         )}
         <div className="flex gap-3">
-          <Button type="submit" className="flex-1" disabled={isLoading}>
+          <Button data-testid="save-skill-button" type="submit" className="flex-1" disabled={isLoading}>
             {isLoading ? "Updating..." : "Update Skill"}
           </Button>
           {onCancel && (

@@ -3,7 +3,7 @@ import { EmployerExperienceSchema } from "./employer-experience.schema";
 
 export const SkillSchema = z.object({
   id: z.string(),
-  name: z.string().nullable(),
+  name: z.string().min(1, 'Name is required'),
   category_id: z.string(),
   subcategory_id: z.string().nullable(),
   comfort_level: z.number(),
@@ -12,7 +12,7 @@ export const SkillSchema = z.object({
 });
 
 export const SkillInsertSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, 'Name is required'),
   category_id: z.string(),
   subcategory_id: z.string().nullable().optional(),
   comfort_level: z.number(),
@@ -26,7 +26,7 @@ export const SkillInsertSchema = z.object({
 }));
 
 export const SkillUpdateSchema = z.object({
-  name: z.string().nullable().optional(),
+  name: z.string().min(1, 'Name is required'),
   category_id: z.string().optional(),
   subcategory_id: z.string().nullable().optional(),
   comfort_level: z.number().optional(),

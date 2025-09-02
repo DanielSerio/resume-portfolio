@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
 import { useZodForm } from "../core/useZodForm";
 import {
   EmployerExperienceInsertSchema,
   EmployerExperienceUpdateSchema,
-  EmployerExperienceSchema,
   type EmployerExperience,
   type EmployerExperienceInsert,
   type EmployerExperienceUpdate,
@@ -16,7 +16,11 @@ const DeleteEmployerExperienceSchema = z.object({
   confirmName: z.string(),
 });
 
-export function useCreateEmployerExperienceForm() {
+export interface UseEmployerExperienceFormProps {
+  onSuccess: () => void;
+}
+
+export function useCreateEmployerExperienceForm({ onSuccess }: UseEmployerExperienceFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/employer-experiences" });
 
   return useZodForm({
@@ -32,16 +36,17 @@ export function useCreateEmployerExperienceForm() {
       if (error) throw error;
       return insertedExperience;
     },
-    onSuccess: () => {
-      console.log("Employer experience created successfully");
+    onSuccess: async () => {
+      await toast.success("Employer experience created successfully");
+      onSuccess();
     },
-    onError: (error) => {
-      console.error("Failed to create employer experience:", error);
+    onError: async (error) => {
+      await toast.error("Failed to create employer experience:", error);
     },
   });
 }
 
-export function useUpdateEmployerExperienceForm(employerExperience: EmployerExperience) {
+export function useUpdateEmployerExperienceForm(employerExperience: EmployerExperience, { onSuccess }: UseEmployerExperienceFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/employer-experiences" });
 
   return useZodForm({
@@ -61,16 +66,17 @@ export function useUpdateEmployerExperienceForm(employerExperience: EmployerExpe
       if (error) throw error;
       return updatedExperience;
     },
-    onSuccess: () => {
-      console.log("Employer experience updated successfully");
+    onSuccess: async () => {
+      await toast.success("Employer experience updated successfully");
+      onSuccess();
     },
     onError: (error) => {
-      console.error("Failed to update employer experience:", error);
+      toast.error("Failed to update employer experience:", error);
     },
   });
 }
 
-export function useDeleteEmployerExperienceForm(employerExperience: EmployerExperience) {
+export function useDeleteEmployerExperienceForm(employerExperience: EmployerExperience, { onSuccess }: UseEmployerExperienceFormProps) {
   const { supabase } = useRouteContext({ from: "/admin/employer-experiences" });
   const [isConfirmed, setIsConfirmed] = useState(false);
 
@@ -103,12 +109,13 @@ export function useDeleteEmployerExperienceForm(employerExperience: EmployerExpe
       if (error) throw error;
       return { id: employerExperience.id };
     },
-    onSuccess: () => {
-      console.log("Employer experience deleted successfully");
+    onSuccess: async () => {
+      await toast.success("Employer experience deleted successfully");
       setIsConfirmed(false);
+      onSuccess();
     },
     onError: (error) => {
-      console.error("Failed to delete employer experience:", error);
+      toast.error("Failed to delete employer experience:", error);
     },
   });
 

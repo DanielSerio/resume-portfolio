@@ -25,9 +25,13 @@ export function useCategoryTableColumns({
     },
     unknown
   >): JSX.Element {
+    const cellValue = cell.getValue() as string;
     return (
-      <TablePseudoLink onClick={() => onUpdateClick(row)}>
-        {cell.getValue() as string}
+      <TablePseudoLink 
+        data-testid={`edit-category-${row.original.id}`} 
+        onClick={() => onUpdateClick(row)}
+      >
+        <span data-testid={`category-${row.original.id}-name`}>{cellValue}</span>
       </TablePseudoLink>
     );
   }
@@ -57,6 +61,7 @@ export function useCategoryTableColumns({
         cell({ row }) {
           return (
             <Button
+              data-testid={`delete-category-${row.original.id}`}
               className="w-[24px] h-[24px] text-destructive"
               variant="ghost"
               size="icon"

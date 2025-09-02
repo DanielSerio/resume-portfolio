@@ -26,7 +26,10 @@ export function useSubcategoryTableColumns({
     unknown
   >): JSX.Element {
     return (
-      <TablePseudoLink onClick={() => onUpdateClick(row)}>
+      <TablePseudoLink
+        onClick={() => onUpdateClick(row)}
+        data-testid={`edit-subcategory-${row.original.id}`}
+      >
         {cell.getValue() as string}
       </TablePseudoLink>
     );
@@ -57,6 +60,7 @@ export function useSubcategoryTableColumns({
         cell({ row }) {
           return (
             <Button
+              data-testid={`delete-subcategory-${row.original.id}`}
               className="w-[24px] h-[24px] text-destructive"
               variant="ghost"
               size="icon"

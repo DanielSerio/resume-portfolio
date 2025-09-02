@@ -9,6 +9,7 @@ export function Table<TableRowData extends RowData>({
   table,
   isLoading,
   error,
+  testId,
   gridTemplateColumns,
 }: TableProps<TableRowData>) {
   if (error) {
@@ -16,7 +17,7 @@ export function Table<TableRowData extends RowData>({
   }
 
   return (
-    <div className="relative text-sm">
+    <div className="relative text-sm" data-testid={testId}>
       <div className="w-full">
         <div>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -42,7 +43,7 @@ export function Table<TableRowData extends RowData>({
         </div>
         <div>
           {isLoading ? (
-            <TableSkeleton 
+            <TableSkeleton
               gridTemplateColumns={gridTemplateColumns}
               columns={table.getAllColumns().length}
               rows={5}

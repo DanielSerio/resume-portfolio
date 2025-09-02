@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { supabase } from "@/lib/supabase";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
@@ -20,6 +21,7 @@ export const Route = createRootRoute({
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Outlet />
       <TanStackRouterDevtools />
+      <Toaster />
     </ThemeProvider>
   ),
 });

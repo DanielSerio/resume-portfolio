@@ -5,4 +5,5 @@ export interface TableProps<TableRowData extends RowData> {
   gridTemplateColumns: string;
   isLoading?: boolean;
   error?: Error | null;
+  testId: string;
 }

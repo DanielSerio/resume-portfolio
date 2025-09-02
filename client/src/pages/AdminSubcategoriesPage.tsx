@@ -48,12 +48,16 @@ export function AdminSubcategoriesPage() {
   return (
     <Page>
       <Table
+        testId="subcategories-list"
         isLoading={query.isLoading}
         table={table}
         gridTemplateColumns={gridTemplateColumns}
       />
       <div className="p-4">
-        <Button onClick={() => launch("create")}>
+        <Button
+          data-testid="add-subcategory-button"
+          onClick={() => launch("create")}
+        >
           Create a New Subcategory
         </Button>
       </div>
@@ -72,6 +76,7 @@ export function AdminSubcategoriesPage() {
             <SubcategoryForm
               subcategory={selectedSubcategory ?? undefined}
               mode={mode}
+              onSuccess={() => dismissSheet()}
             />
           </div>
         </SheetContent>

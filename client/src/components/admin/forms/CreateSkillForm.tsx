@@ -22,26 +22,20 @@ import {
   useSubcategoriesList,
   useEmployerExperiencesList,
 } from "@/hooks/resume";
-import type { Client } from "@/main";
+import { useRouteContext } from "@tanstack/react-router";
 import { useFieldArray } from "react-hook-form";
 import { Trash2, Plus } from "lucide-react";
 
 interface CreateSkillFormProps {
-  supabase: Client;
   onSuccess: () => void;
-  onError: (error: Error) => void;
   onCancel?: () => void;
 }
 
-export function CreateSkillForm({
-  supabase,
-  onSuccess,
-  onError,
-  onCancel,
-}: CreateSkillFormProps) {
+export function CreateSkillForm({ onSuccess, onCancel }: CreateSkillFormProps) {
+  const { supabase } = useRouteContext({ from: "/admin/skills" });
+
   const { form, handleSubmit, isLoading, error } = useCreateSkillForm({
     onSuccess,
-    onError,
   });
   const categoriesQuery = useCategoriesList(supabase);
   const subcategoriesQuery = useSubcategoriesList(supabase);
@@ -70,6 +64,7 @@ export function CreateSkillForm({
               <FormLabel>Skill Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="skill-name-input"
                   placeholder="Enter skill name"
                   {...field}
                   value={field.value || ""}
@@ -93,13 +88,20 @@ export function CreateSkillForm({
                 disabled={isLoading}
               >
                 <FormControl>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger
+                    data-testid="skill-category-select"
+                    className="w-full"
+                  >
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {(categoriesQuery.data ?? []).map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
+                  {(categoriesQuery.data ?? []).map((category, i) => (
+                    <SelectItem
+                      key={category.id}
+                      value={category.id}
+                      data-testid={`skill-category-option-${i}`}
+                    >
                       {category.name}
                     </SelectItem>
                   ))}
@@ -124,7 +126,10 @@ export function CreateSkillForm({
                 disabled={isLoading}
               >
                 <FormControl>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger
+                    data-testid="skill-subcategory-select"
+                    className="w-full"
+                  >
                     <SelectValue placeholder="Select a subcategory" />
                   </SelectTrigger>
                 </FormControl>
@@ -150,6 +155,7 @@ export function CreateSkillForm({
               <FormLabel>Comfort Level: {field.value || 1}/100</FormLabel>
               <FormControl>
                 <Slider
+                  data-testid="skill-comfort-level-input"
                   min={1}
                   max={100}
                   step={1}
@@ -171,9 +177,7 @@ export function CreateSkillForm({
               type="button"
               variant="outline"
               size="sm"
-              onClick={() =>
-                appendEmployerExperience({ employer_experience_id: "" })
-              }
+              onClick={() => appendEmployerExperience({ id: "" })}
               disabled={isLoading}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -238,7 +242,12 @@ export function CreateSkillForm({
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" className="flex-1" disabled={isLoading}>
+          <Button
+            data-testid="save-skill-button"
+            type="submit"
+            className="flex-1"
+            disabled={isLoading}
+          >
             {isLoading ? "Creating..." : "Create Skill"}
           </Button>
           {onCancel && (
