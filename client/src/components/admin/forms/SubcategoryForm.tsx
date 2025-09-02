@@ -203,6 +203,7 @@ function DeleteSubcategoryForm({
               </FormLabel>
               <FormControl>
                 <Input
+                  data-testid="subcategory-delete-input"
                   placeholder={`Type "${subcategory.name}" here`}
                   {...field}
                   disabled={isLoading}
@@ -225,6 +226,7 @@ function DeleteSubcategoryForm({
             className="flex-1"
             disabled={isLoading}
             variant="destructive"
+            data-testid="subcategory-delete-button"
           >
             {isLoading ? "Deleting..." : "Delete Subcategory"}
           </Button>

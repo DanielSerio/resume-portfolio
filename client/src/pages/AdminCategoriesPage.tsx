@@ -76,6 +76,7 @@ export function AdminCategoriesPage() {
             <CategoryForm
               category={selectedCategory ?? undefined}
               mode={mode}
+              onSuccess={() => dismissSheet()}
             />
           </div>
         </SheetContent>

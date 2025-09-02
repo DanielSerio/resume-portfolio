@@ -18,16 +18,18 @@ import type { EmployerExperience } from "@/lib/schemas";
 export interface EmployerExperienceFormProps {
   mode: "create" | "update" | "delete";
   employerExperience?: EmployerExperience;
+  onSuccess: () => void;
   onCancel?: () => void;
 }
 
 export function EmployerExperienceForm({
   mode,
   employerExperience,
+  onSuccess,
   onCancel,
 }: EmployerExperienceFormProps) {
   if (mode === "create") {
-    return <CreateEmployerExperienceForm onCancel={onCancel} />;
+    return <CreateEmployerExperienceForm onCancel={onCancel} onSuccess={onSuccess} />;
   }
 
   if (mode === "update" && employerExperience) {
@@ -35,6 +37,7 @@ export function EmployerExperienceForm({
       <UpdateEmployerExperienceForm
         employerExperience={employerExperience}
         onCancel={onCancel}
+        onSuccess={onSuccess}
       />
     );
   }
@@ -44,6 +47,7 @@ export function EmployerExperienceForm({
       <DeleteEmployerExperienceForm
         employerExperience={employerExperience}
         onCancel={onCancel}
+        onSuccess={onSuccess}
       />
     );
   }
@@ -51,9 +55,9 @@ export function EmployerExperienceForm({
   return null;
 }
 
-function CreateEmployerExperienceForm({ onCancel }: { onCancel?: () => void }) {
+function CreateEmployerExperienceForm({ onCancel, onSuccess }: { onCancel?: () => void; onSuccess: () => void }) {
   const { form, handleSubmit, isLoading, error } =
-    useCreateEmployerExperienceForm();
+    useCreateEmployerExperienceForm({ onSuccess });
 
   return (
     <Form {...form}>
@@ -66,6 +70,7 @@ function CreateEmployerExperienceForm({ onCancel }: { onCancel?: () => void }) {
               <FormLabel>Employer Experience Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="employer-name-input"
                   placeholder="Enter employer experience name"
                   {...field}
                   disabled={isLoading}
@@ -82,7 +87,7 @@ function CreateEmployerExperienceForm({ onCancel }: { onCancel?: () => void }) {
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" className="flex-1" disabled={isLoading}>
+          <Button data-testid="save-employer-experience-button" type="submit" className="flex-1" disabled={isLoading}>
             {isLoading ? "Creating..." : "Create Employer Experience"}
           </Button>
           {onCancel && (
@@ -99,12 +104,14 @@ function CreateEmployerExperienceForm({ onCancel }: { onCancel?: () => void }) {
 function UpdateEmployerExperienceForm({
   employerExperience,
   onCancel,
+  onSuccess,
 }: {
   employerExperience: EmployerExperience;
   onCancel?: () => void;
+  onSuccess: () => void;
 }) {
   const { form, handleSubmit, isLoading, error } =
-    useUpdateEmployerExperienceForm(employerExperience);
+    useUpdateEmployerExperienceForm(employerExperience, { onSuccess });
 
   return (
     <Form {...form}>
@@ -117,6 +124,7 @@ function UpdateEmployerExperienceForm({
               <FormLabel>Employer Experience Name</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="employer-name-input"
                   placeholder="Enter employer experience name"
                   {...field}
                   disabled={isLoading}
@@ -134,7 +142,7 @@ function UpdateEmployerExperienceForm({
         )}
 
         <div className="flex gap-3">
-          <Button type="submit" className="flex-1" disabled={isLoading}>
+          <Button data-testid="save-employer-experience-button" type="submit" className="flex-1" disabled={isLoading}>
             {isLoading ? "Updating..." : "Update Employer Experience"}
           </Button>
           {onCancel && (
@@ -151,12 +159,14 @@ function UpdateEmployerExperienceForm({
 function DeleteEmployerExperienceForm({
   employerExperience,
   onCancel,
+  onSuccess,
 }: {
   employerExperience: EmployerExperience;
   onCancel?: () => void;
+  onSuccess: () => void;
 }) {
   const { form, handleSubmit, isLoading, error } =
-    useDeleteEmployerExperienceForm(employerExperience);
+    useDeleteEmployerExperienceForm(employerExperience, { onSuccess });
 
   return (
     <Form {...form}>
@@ -181,6 +191,7 @@ function DeleteEmployerExperienceForm({
               </FormLabel>
               <FormControl>
                 <Input
+                  data-testid="employer-experience-delete-input"
                   placeholder={`Type "${employerExperience.name}" here`}
                   {...field}
                   disabled={isLoading}
@@ -199,6 +210,7 @@ function DeleteEmployerExperienceForm({
 
         <div className="flex gap-3">
           <Button
+            data-testid="employer-experience-delete-button"
             type="submit"
             className="flex-1"
             disabled={isLoading}

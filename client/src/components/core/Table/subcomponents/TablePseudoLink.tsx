@@ -7,9 +7,10 @@ interface TablePseudoLinkProps
 export const TablePseudoLink = ({
   children,
   onClick,
+  ...props
 }: TablePseudoLinkProps) => {
   return (
-    <Button variant="link" size="sm" onClick={onClick}>
+    <Button variant="link" size="sm" onClick={onClick} {...props}>
       {children}
     </Button>
   );

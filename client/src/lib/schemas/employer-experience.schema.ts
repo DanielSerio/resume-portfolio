@@ -1,20 +1,20 @@
 import { z } from "zod";
 
 export const EmployerExperienceSchema = z.object({
-  employer_experience_id: z.string(),
-  name: z.string(),
+  id: z.string(),
+  name: z.string(`Name is required`).min(1, `Name is required`),
 });
 
 export const EmployerExperienceInsertSchema = z.object({
-  name: z.string(),
+  name: z.string(`Name is required`).min(1, `Name is required`),
 }).transform(({ name }) => ({
   name,
-  employer_experience_id: encodeURIComponent(name)
+  id: encodeURIComponent(name)
 }));
 
 export const EmployerExperienceUpdateSchema = z.object({
-  employer_experience_id: z.string().optional(),
-  name: z.string().optional(),
+  id: z.string().optional(),
+  name: z.string(`Name is required`).min(1, `Name is required`),
 });
 
 export type EmployerExperience = z.infer<typeof EmployerExperienceSchema>;

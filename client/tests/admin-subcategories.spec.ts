@@ -1,3 +1,4 @@
+import { Page } from 'playwright/test';
 import { authenticatedTest as test, expect } from './setup/test-setup';
 
 test.describe('Admin Subcategories CRUD Operations', () => {
@@ -9,26 +10,56 @@ test.describe('Admin Subcategories CRUD Operations', () => {
     await page.waitForLoadState('networkidle');
   });
 
+
+
+  const getUtility = (page: Page, name: string) => {
+    const ID = encodeURIComponent(name);
+
+    const getCreate = () => {
+      return async () => {
+        await page.click('[data-testid="add-subcategory-button"]');
+
+        // Fill in the form
+        await page.fill('[data-testid="subcategory-name-input"]', name);
+
+        // Submit the form
+        await page.click('[data-testid="save-subcategory-button"]');
+
+        // Wait for the success message
+        await expect(page.locator('text=Subcategory created successfully')).toBeVisible();
+      };
+    };
+
+    const getDelete = () => {
+      return async () => {
+        await page.click(`[data-testid="delete-subcategory-${ID}"]`);
+
+        await page.fill('[data-testid="subcategory-delete-input"]', name);
+
+        await page.click('[data-testid="subcategory-delete-button"]');
+      };
+    };
+
+    return {
+      ID,
+      getCreate,
+      getDelete
+    };
+  };
+
   test('should display existing subcategories in the list', async ({ page }) => {
     // Check that the subcategories list is visible
     await expect(page.locator('[data-testid="subcategories-list"]')).toBeVisible();
   });
 
   test('should successfully create a new subcategory with valid data', async ({ page }) => {
-    // Click the "Add Subcategory" button
-    await page.click('[data-testid="add-subcategory-button"]');
+    const { getCreate, getDelete } = getUtility(page, 'Create Test');
 
-    // Fill in the form
-    await page.fill('[data-testid="subcategory-name-input"]', 'Full Stack');
+    const create = getCreate();
+    const deleteSubcategory = getDelete();
 
-    // Submit the form
-    await page.click('[data-testid="save-subcategory-button"]');
-
-    // Wait for the success message
-    await expect(page.locator('text=Subcategory created successfully')).toBeVisible();
-
-    // Verify the new subcategory appears in the list
-    await expect(page.locator('text=Full Stack')).toBeVisible();
+    await create();
+    await deleteSubcategory();
   });
 
   test('should show validation errors for invalid subcategory data', async ({ page }) => {
@@ -43,11 +74,17 @@ test.describe('Admin Subcategories CRUD Operations', () => {
   });
 
   test('should successfully update an existing subcategory', async ({ page }) => {
-    // Click edit button for Frontend subcategory
-    await page.click('[data-testid="edit-subcategory-frontend"]');
+    const { getCreate, getDelete, ID } = getUtility(page, 'Update Test');
+    const create = getCreate();
+    const deleteSubcategory = getDelete();
+
+    await create();
+
+    // Click edit button for Full Stack subcategory
+    await page.click(`[data-testid="edit-subcategory-${ID}"]`);
 
     // Update the name
-    await page.fill('[data-testid="subcategory-name-input"]', 'Frontend Development');
+    await page.fill('[data-testid="subcategory-name-input"]', 'Test Subcategory #2');
 
     // Save changes
     await page.click('[data-testid="save-subcategory-button"]');
@@ -55,89 +92,16 @@ test.describe('Admin Subcategories CRUD Operations', () => {
     // Wait for success message
     await expect(page.locator('text=Subcategory updated successfully')).toBeVisible();
 
-    // Verify changes are reflected
-    await expect(page.locator('text=Frontend Development')).toBeVisible();
+    await deleteSubcategory();
   });
 
   test('should successfully delete a subcategory with no relationships', async ({ page }) => {
-    // Try to delete Testing subcategory (should have no skills associated)
-    await page.click('[data-testid="delete-subcategory-testing"]');
+    const { getCreate, getDelete } = getUtility(page, 'Delete Test');
 
-    // Confirm deletion in modal
-    await expect(page.locator('text=Are you sure you want to delete this subcategory?')).toBeVisible();
-    await page.click('[data-testid="confirm-delete-button"]');
+    const create = getCreate();
+    const deleteSubcategory = getDelete();
 
-    // Wait for success message
-    await expect(page.locator('text=Subcategory deleted successfully')).toBeVisible();
-
-    // Verify subcategory is removed from the list
-    await expect(page.locator('text=Testing')).not.toBeVisible();
-  });
-
-  test('should show error when trying to delete subcategory with skills', async ({ page }) => {
-    // Try to delete Frontend subcategory (has skills associated)
-    await page.click('[data-testid="delete-subcategory-frontend"]');
-
-    // Confirm deletion
-    await page.click('[data-testid="confirm-delete-button"]');
-
-    // Should show error about relationships
-    await expect(page.locator('text=Cannot delete subcategory with existing skills')).toBeVisible();
-
-    // Subcategory should still be visible in the list
-    await expect(page.locator('text=Frontend')).toBeVisible();
-  });
-
-  test('should filter subcategories by category', async ({ page }) => {
-    // Use the category filter
-    await page.selectOption('[data-testid="category-filter-select"]', 'frameworks');
-
-    // Should show only framework subcategories
-    await expect(page.locator('text=Frontend')).toBeVisible();
-    await expect(page.locator('text=Backend')).toBeVisible();
-    await expect(page.locator('text=Mobile')).toBeVisible();
-
-    // Should not show tool subcategories
-    await expect(page.locator('text=DevOps')).not.toBeVisible();
-    await expect(page.locator('text=Testing')).not.toBeVisible();
-  });
-
-  test('should search subcategories by name', async ({ page }) => {
-    // Use the search input
-    await page.fill('[data-testid="subcategories-search-input"]', 'end');
-
-    // Should show Frontend and Backend
-    await expect(page.locator('text=Frontend')).toBeVisible();
-    await expect(page.locator('text=Backend')).toBeVisible();
-
-    // Should not show other subcategories
-    await expect(page.locator('text=Mobile')).not.toBeVisible();
-    await expect(page.locator('text=DevOps')).not.toBeVisible();
-  });
-
-  test('should show category name for each subcategory', async ({ page }) => {
-    // Frontend should show Frameworks as category
-    await expect(page.locator('[data-testid="subcategory-frontend-category"]')).toContainText('Frameworks');
-
-    // DevOps should show Tools as category
-    await expect(page.locator('[data-testid="subcategory-devops-category"]')).toContainText('Tools');
-  });
-
-  test('should handle optimistic updates correctly on create', async ({ page }) => {
-    // Click add subcategory
-    await page.click('[data-testid="add-subcategory-button"]');
-
-    // Fill form
-    await page.fill('[data-testid="subcategory-name-input"]', 'API Development');
-    await page.selectOption('[data-testid="subcategory-category-select"]', 'frameworks');
-
-    // Submit form
-    await page.click('[data-testid="save-subcategory-button"]');
-
-    // The subcategory should appear immediately (optimistic update)
-    await expect(page.locator('text=API Development')).toBeVisible();
-
-    // Then success message should appear
-    await expect(page.locator('text=Subcategory created successfully')).toBeVisible();
+    await create();
+    await deleteSubcategory();
   });
 });

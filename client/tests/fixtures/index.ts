@@ -12,9 +12,6 @@ export interface TestSubcategory {
 export interface TestEmployerExperience {
   id: string;
   name: string;
-  description?: string;
-  start_date?: string;
-  end_date?: string;
 }
 
 export interface TestSkill {
@@ -53,23 +50,14 @@ export const testEmployerExperiences: TestEmployerExperience[] = [
   {
     id: 'company-a',
     name: 'Company A',
-    description: 'Tech company focused on web applications',
-    start_date: '2020-01-01',
-    end_date: '2022-12-31',
   },
   {
     id: 'company-b',
     name: 'Company B',
-    description: 'Mobile app development company',
-    start_date: '2023-01-01',
-    end_date: null,
   },
   {
     id: 'freelance',
     name: 'Freelance',
-    description: 'Independent contractor work',
-    start_date: '2019-01-01',
-    end_date: null,
   },
 ];
 

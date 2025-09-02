@@ -158,7 +158,7 @@ export const test = base.extend({
     });
 
     // Subcategories endpoint
-    await page.route('http://127.0.0.1:54321/rest/v1/subcategory*', async (route) => {
+    await page.route('http://127.0.0.1:54321/rest/v1/skill_subcategory*', async (route) => {
       const method = route.request().method();
       const url = new URL(route.request().url());
       console.log(`📁 Mocking subcategory: ${method} ${route.request().url()}`);
@@ -239,9 +239,6 @@ export const test = base.extend({
         const newEmployerExperience: TestEmployerExperience = {
           id,
           name: body.name || '',
-          description: body.description,
-          start_date: body.start_date,
-          end_date: body.end_date,
         };
         employerExperiences.push(newEmployerExperience);
         return route.fulfill({

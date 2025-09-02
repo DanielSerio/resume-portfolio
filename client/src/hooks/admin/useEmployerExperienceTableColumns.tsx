@@ -31,7 +31,10 @@ export function useEmployerExperienceTableColumns({
     unknown
   >): JSX.Element {
     return (
-      <TablePseudoLink onClick={() => onUpdateClick(row)}>
+      <TablePseudoLink
+        onClick={() => onUpdateClick(row)}
+        data-testid={`edit-employer-experience-${row.original.id}`}
+      >
         {cell.getValue() as string}
       </TablePseudoLink>
     );
@@ -62,6 +65,7 @@ export function useEmployerExperienceTableColumns({
         cell({ row }) {
           return (
             <Button
+              data-testid={`delete-employer-experience-${row.original.id}`}
               className="w-[24px] h-[24px] text-destructive"
               variant="ghost"
               size="icon"
