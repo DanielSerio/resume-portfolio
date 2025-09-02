@@ -35,3 +35,11 @@ supabase/*
 
 *storybook.log
 storybook-static
+
+src/test-results/*
+# Playwright specific files and directories
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/.local-browsers/
+playwright/.auth/
