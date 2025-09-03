@@ -25,7 +25,10 @@ dist-ssr
 *.sw?
 
 # Supabase
-supabase/*
+supabase/.branches
+supabase/.branches/*
+supabase/.temp
+supabase/.temp/*
 
 # dotenvx
 .env
