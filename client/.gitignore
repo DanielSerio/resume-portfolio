@@ -46,3 +46,5 @@ src/test-results/*
 /playwright/.cache/
 /.local-browsers/
 playwright/.auth/
+
+seed.sql
